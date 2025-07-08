@@ -1,131 +1,147 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
+// import React from 'react';
+// import { NavigationContainer } from '@react-navigation/native';
+// import { createNativeStackNavigator } from '@react-navigation/native-stack';
+// import { SafeAreaProvider } from 'react-native-safe-area-context';
+// import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+
+// import { AuthProvider } from './src/context/AuthContext';
+// import BottomTabNavigator from './src/navigation/BottomTabNavigator';
+// import LocationPickerScreen from './src/screens/LocationPickerScreen';
+// import HomeScreen from './src/screens/HomeScreen';
+// import SearchResultsPage from './src/screens/SearchResultsPage';
+// import CarDetails from './src/screens/CarDetails';
+// import OTPVerificationScreen from './src/screens/OTPVerificationScreen';
+// import ProfileScreen from './src/screens/ProfileScreen';
+// import DocumentsScreen from './src/screens/DocumentsScreen';
+// import RatingsReviewScreen from './src/screens/RatingsReviewScreen';
+// import SettingsScreen from './src/screens/SettingsScreen';
+// import EditProfile from './src/screens/EditProfile';
+// import PaymentScreen from './src/screens/PaymentScreen';
+// import MobileVerificationScreen from './src/screens/MobileVerificationScreen';
+// import MyTripsScreen from './src/screens/MyTripsScreen';
+// import LoginScreen from './src/screens/LoginScreen';
+// import SignUpScreen from './src/screens/SignUpScreen';
+// import LoyaltyRewardsScreen from './src/screens/LoyaltyRewardsScreen';
+// import { RootStackParamList } from './src/navigation/navigation';
+
+// const Stack = createNativeStackNavigator<RootStackParamList>();
+
+// // Create one client for the whole app
+// const queryClient = new QueryClient();
+
+// export default function App() {
+//   return (
+//     <QueryClientProvider client={queryClient}>
+//       <SafeAreaProvider>
+//         <AuthProvider>
+//           <NavigationContainer>
+//             <Stack.Navigator>
+//               <Stack.Screen name="Main" component={BottomTabNavigator} options={{ headerShown: false }} />
+//               <Stack.Screen name="LocationPicker" component={LocationPickerScreen} options={{ title: 'Pick a Location' }} />
+//               <Stack.Screen name="Home" component={HomeScreen} options={{ headerShown: false }} />
+//               <Stack.Screen name="SearchResults" component={SearchResultsPage} options={{ title: 'Search Results' }} />
+//               <Stack.Screen name="CarDetails" component={CarDetails} options={{ title: 'Car Details' }} />
+//               <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
+//               <Stack.Screen name="SignUp" component={SignUpScreen} options={{ title: 'Sign Up' }} />
+//               <Stack.Screen name="OTPVerification" component={OTPVerificationScreen} options={{ title: 'Verify OTP' }} />
+//               <Stack.Screen name="Profile" component={ProfileScreen} options={{ headerShown: false }} />
+//               <Stack.Screen name="Documents" component={DocumentsScreen} options={{ title: 'Documents' }} />
+//               <Stack.Screen name="RatingsReview" component={RatingsReviewScreen} options={{ title: 'Ratings and review' }} />
+//               <Stack.Screen name="Settings" component={SettingsScreen} options={{ title: 'Settings' }} />
+//               <Stack.Screen name="EditProfile" component={EditProfile} options={{ title: 'Edit Profile' }} />
+//               <Stack.Screen name="Payment" component={PaymentScreen} />
+//               <Stack.Screen name="MobileVerification" component={MobileVerificationScreen} options={{ title: 'Mobile Verification' }} />
+//               <Stack.Screen name="MyTrips" component={MyTripsScreen} options={{ title: 'My Trips' }} />
+//               <Stack.Screen name="LoyaltyRewards" component={LoyaltyRewardsScreen} options={{ title: 'Loyalty Rewards' }} />
+//             </Stack.Navigator>
+//           </NavigationContainer>
+//         </AuthProvider>
+//       </SafeAreaProvider>
+//     </QueryClientProvider>
+//   );
+// }
+
+
+
 
 import React from 'react';
-import type {PropsWithChildren} from 'react';
-import {
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
-} from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { AuthProvider } from './src/context/AuthContext';
+import BottomTabNavigator from './src/navigation/BottomTabNavigator';
+import LocationPickerScreen from './src/screens/LocationPickerScreen';
+import HomeScreen from './src/screens/HomeScreen';
+import SearchResultsPage from './src/screens/SearchResultsPage';
+import CarDetails from './src/screens/CarDetails';
+import OTPVerificationScreen from './src/screens/OTPVerificationScreen';
+import ProfileScreen from './src/screens/ProfileScreen';
+import DocumentsScreen from './src/screens/DocumentsScreen';
+import RatingsReviewScreen from './src/screens/RatingsReviewScreen';
+import SettingsScreen from './src/screens/SettingsScreen';
+import EditProfile from './src/screens/EditProfile';
+import PaymentScreen from './src/screens/PaymentScreen';
+import MobileVerificationScreen from './src/screens/MobileVerificationScreen';
+import MyTripsScreen from './src/screens/MyTripsScreen';
+import LoginScreen from './src/screens/LoginScreen';
+import LoyaltyRewardsScreen from './src/screens/LoyaltyRewardsScreen';
+import ViewDetailsPage from './src/screens/ViewDetailsPage';
 
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
+export type RootStackParamList = {
+  Main: undefined;
+  LocationPicker: undefined;
+  Home: undefined;
+  SearchResults: { location?: string; startDate?: string; endDate?: string };
+  CarDetails: { carId: number };
+  Login: { redirectTo?: { screen: string; params?: any } };
+  SignUp: undefined;
+  OTPVerification: { mobileNumber: string; redirectTo?: { screen: string; params?: any } };
+  Profile: undefined;
+  Documents: undefined;
+  RatingsReview: { bookingId: number };
+  Settings: undefined;
+  EditProfile: undefined;
+  Payment: { carId: number; carName: string; price: string; startDate: string; endDate: string };
+  MobileVerification: undefined;
+  MyTrips: undefined;
+  LoyaltyRewards: undefined;
+  ViewDetails: { carId: number; startDate?: string; endDate?: string };
+};
 
-type SectionProps = PropsWithChildren<{
-  title: string;
-}>;
+const Stack = createNativeStackNavigator<RootStackParamList>();
 
-function Section({children, title}: SectionProps): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
+const queryClient = new QueryClient();
+
+export default function App() {
   return (
-    <View style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
-          },
-        ]}>
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}>
-        {children}
-      </Text>
-    </View>
+    <QueryClientProvider client={queryClient}>
+      <SafeAreaProvider>
+        <AuthProvider>
+          <NavigationContainer>
+            <Stack.Navigator>
+              <Stack.Screen name="Main" component={BottomTabNavigator} options={{ headerShown: false }} />
+              <Stack.Screen name="LocationPicker" component={LocationPickerScreen} options={{ title: 'Pick a Location' }} />
+              <Stack.Screen name="Home" component={HomeScreen} options={{ headerShown: false }} />
+              <Stack.Screen name="SearchResults" component={SearchResultsPage} options={{ title: 'Search Results' }} />
+              <Stack.Screen name="CarDetails" component={CarDetails} options={{ title: 'Car Details' }} />
+              <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
+              {/* <Stack.Screen name="SignUp" component={SignUpScreen} options={{ title: 'Sign Up' }} /> */}
+              <Stack.Screen name="OTPVerification" component={OTPVerificationScreen} options={{ title: 'Verify OTP' }} />
+              <Stack.Screen name="Profile" component={ProfileScreen} options={{ headerShown: false }} />
+              <Stack.Screen name="Documents" component={DocumentsScreen} options={{ title: 'Documents' }} />
+              <Stack.Screen name="RatingsReview" component={RatingsReviewScreen} options={{ title: 'Ratings and Review' }} />
+              <Stack.Screen name="Settings" component={SettingsScreen} options={{ title: 'Settings' }} />
+              <Stack.Screen name="EditProfile" component={EditProfile} options={{ title: 'Edit Profile' }} />
+              <Stack.Screen name="Payment" component={PaymentScreen} options={{ title: 'Payment' }} />
+              <Stack.Screen name="MobileVerification" component={MobileVerificationScreen} options={{ title: 'Mobile Verification' }} />
+              <Stack.Screen name="MyTrips" component={MyTripsScreen} options={{ title: 'My Trips' }} />
+              <Stack.Screen name="LoyaltyRewards" component={LoyaltyRewardsScreen} options={{ title: 'Loyalty Rewards' }} />
+              <Stack.Screen name="ViewDetails" component={ViewDetailsPage} options={{ title: 'View Details' }} />
+            </Stack.Navigator>
+          </NavigationContainer>
+        </AuthProvider>
+      </SafeAreaProvider>
+    </QueryClientProvider>
   );
 }
-
-function App(): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
-
-  /*
-   * To keep the template simple and small we're adding padding to prevent view
-   * from rendering under the System UI.
-   * For bigger apps the recommendation is to use `react-native-safe-area-context`:
-   * https://github.com/AppAndFlow/react-native-safe-area-context
-   *
-   * You can read more about it here:
-   * https://github.com/react-native-community/discussions-and-proposals/discussions/827
-   */
-  const safePadding = '5%';
-
-  return (
-    <View style={backgroundStyle}>
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={backgroundStyle.backgroundColor}
-      />
-      <ScrollView
-        style={backgroundStyle}>
-        <View style={{paddingRight: safePadding}}>
-          <Header/>
-        </View>
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-            paddingHorizontal: safePadding,
-            paddingBottom: safePadding,
-          }}>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.tsx</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
-        </View>
-      </ScrollView>
-    </View>
-  );
-}
-
-const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-  },
-  highlight: {
-    fontWeight: '700',
-  },
-});
-
-export default App;
