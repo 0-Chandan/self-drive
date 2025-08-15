@@ -41,7 +41,7 @@ const RatingsReviewScreen: React.FC = () => {
               <Ionicons
                 name={rating >= star ? 'star' : 'star-outline'}
                 size={40}
-                color="#811717"
+                color="#006400     "
               />
             </TouchableOpacity>
           ))}
@@ -72,7 +72,7 @@ const styles = StyleSheet.create({
     borderBottomColor: '#eee',
     alignItems: 'center',
   },
-  headerText: { fontSize: 18, fontWeight: 'bold', color: '#811717' },
+  headerText: { fontSize: 18, fontWeight: 'bold', color: '#006400' },
   content: { padding: 16, flex: 1 },
   title: { fontSize: 16, fontWeight: 'bold', marginBottom: 10 },
   stars: {
@@ -90,7 +90,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   submitButton: {
-    backgroundColor: '#811717',
+    backgroundColor: '#006400',
     padding: 15,
     borderRadius: 8,
     alignItems: 'center',

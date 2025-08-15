@@ -1,4 +1,4 @@
-package com.selfdrive
+package com.crzo.selfdrive
 
 import com.facebook.react.ReactActivity
 import com.facebook.react.ReactActivityDelegate

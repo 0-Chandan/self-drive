@@ -1,945 +1,56 @@
-// import React from 'react';
-// import { View, Text, Image, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
-// import Ionicons from 'react-native-vector-icons/Ionicons';
-// import { useRoute, useNavigation } from '@react-navigation/native';
-// import { useAuth } from '../context/AuthContext';
-// import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
-// import type { RouteProp } from '@react-navigation/native';
-
-// type RootStackParamList = {
-//   Login: { redirectTo?: { screen: string; params: any } };
-//   Payment: { carId: number; carName: string; price: string; startDate: string; endDate: string };
-//   CarDetails: { carId: number };
-// };
-
-// type CarDetailsNavigationProp = NativeStackNavigationProp<RootStackParamList, 'CarDetails'>;
-// type CarDetailsRouteProp = RouteProp<RootStackParamList, 'CarDetails'>;
-
-// const CarDetails: React.FC = () => {
-//   const route = useRoute<CarDetailsRouteProp>();
-//   const navigation = useNavigation<CarDetailsNavigationProp>();
-//   const { isLoggedIn } = useAuth();
-//   const { carId } = route.params || { carId: 1 };
-//   const car = {
-//     id: carId,
-//     name: 'Kia Seltos 2024',
-//     price: '₹400/10km',
-//     details: 'Manual | Petrol | Seat - 8',
-//     image: require('../../assets/car1.png'),
-//     rating: 5.0,
-//     startDate: '2025-04-18T05:30:00',
-//     endDate: '2025-04-19T05:30:00',
-//   };
-
-//   const formatDate = (dateStr: string) => {
-//     if (!dateStr || isNaN(new Date(dateStr).getTime())) {
-//       return 'Invalid Date';
-//     }
-//     const date = new Date(dateStr);
-//     return `${date.toLocaleDateString('en-GB', { day: '2-digit', month: 'short' })}`;
-//   };
-
-//   const formatTime = (dateStr: string) => {
-//     if (!dateStr || isNaN(new Date(dateStr).getTime())) {
-//       return '';
-//     }
-//     const date = new Date(dateStr);
-//     return `${date.toLocaleTimeString('en-US', {
-//       hour: '2-digit',
-//       minute: '2-digit',
-//       hour12: true,
-//     })}`;
-//   };
-
-//   const similarCars = [
-//     { id: 2, name: 'Kia Seltos', price: '₹400/10km', details: 'Manual | Petrol | Seat - 6', image: require('../../assets/car1.png') },
-//     { id: 3, name: 'Kia Seltos', price: '₹4000/10km', details: 'Manual | Petrol | Seat - 6', image: require('../../assets/car1.png') },
-//   ];
-
-//   const faqs = [
-//     'How do I book a car ?',
-//     'How to cancel a car ?',
-//     'How do I book a car ?',
-//   ];
-
-//   const handleButtonPress = () => {
-//     if (!isLoggedIn) {
-//       navigation.navigate('Login', {
-//         redirectTo: {
-//           screen: 'CarDetails',
-//           params: { carId: car.id },
-//         },
-//       });
-//     } else {
-//       navigation.navigate('Payment', {
-//         carId: car.id,
-//         carName: car.name,
-//         price: car.price,
-//         startDate: car.startDate,
-//         endDate: car.endDate,
-//       });
-//     }
-//   };
-
-//   return (
-//     <ScrollView style={styles.container}>
-//       <View style={styles.headerCard}>
-//         <Image source={car.image} style={styles.carImage} />
-//         <View style={styles.headerInfo}>
-//           <Text style={styles.carName}>
-//             {car.name} <Ionicons name="star" size={16} color="#900" />
-//           </Text>
-//           <Text style={styles.carDetails}>{car.details}</Text>
-//           <View style={styles.dateBox}>
-//             <Text style={styles.dateBoxText}>{car.price}</Text>
-//             <Text style={styles.dateBoxText}>{`${formatDate(car.startDate)} - ${formatDate(car.endDate)} | ${formatTime(car.startDate)} - ${formatTime(car.endDate)}`}</Text>
-//           </View>
-//         </View>
-//       </View>
-
-//       <View style={styles.section}>
-//         <Text style={styles.sectionTitle}>Features</Text>
-//         <View style={styles.featureList}>
-//           {['Spare Tyres', 'ADAS (2 Front Airbags)', 'ToolKit', 'Anti-lock Braking System (ABS)', '2J Rear Airbags', 'Child Seat'].map((feature, index) => (
-//             <View key={index} style={styles.featureItem}>
-//               <Text style={styles.featureText}>{feature}</Text>
-//               <View style={styles.badge} />
-//             </View>
-//           ))}
-//         </View>
-//       </View>
-
-//       <View style={styles.section}>
-//         <Text style={styles.sectionTitle}>Benefits</Text>
-//         <View style={styles.featureList}>
-//           {['Unlimited Kms with no extra charge', 'Zero Deposit no security deposits or fees'].map((benefit, index) => (
-//             <View key={index} style={styles.featureItem}>
-//               <Text style={styles.featureText}>{benefit}</Text>
-//               <View style={styles.badge} />
-//             </View>
-//           ))}
-//         </View>
-//       </View>
-
-//       <View style={styles.section}>
-//         <Text style={styles.sectionTitle}>Cancellation</Text>
-//         <View style={styles.featureItem}>
-//           <Text style={styles.featureText}>Cancellation Unavailable</Text>
-//           <View style={styles.badge} />
-//         </View>
-//       </View>
-
-//       <View style={styles.section}>
-//         <Text style={styles.sectionTitle}>Reviews</Text>
-//         <View style={styles.reviewCard}>
-//           <View style={styles.reviewHeader}>
-//             <Text style={styles.reviewName}>
-//               Amit Kumar <Ionicons name="star" size={16} color="#900" />
-//             </Text>
-//             <Text style={styles.reviewDate}>18 Apr 2025 | 04:26:50 PM</Text>
-//           </View>
-//           <Text style={styles.reviewText}>
-//             Rented a car just a day before and get an affordable price. The host was very responsive and friendly.
-//           </Text>
-//         </View>
-//       </View>
-
-//       <View style={styles.section}>
-//         <Text style={styles.sectionTitle}>Similar cars</Text>
-//         {similarCars.map((similarCar) => (
-//           <View key={similarCar.id} style={styles.similarCarCard}>
-//             <Image source={similarCar.image} style={styles.similarCarImage} />
-//             <View style={styles.similarCarInfo}>
-//               <Text style={styles.carName}>{similarCar.name}</Text>
-//               <Text style={styles.carPrice}>{similarCar.price}</Text>
-//               <Text style={styles.carDetails}>{similarCar.details}</Text>
-//               <TouchableOpacity style={styles.viewButton}>
-//                 <Text style={styles.viewButtonText}>VIEW</Text>
-//               </TouchableOpacity>
-//             </View>
-//           </View>
-//         ))}
-//       </View>
-
-//       <View style={styles.section}>
-//         <Text style={styles.sectionTitle}>FAQs</Text>
-//         {faqs.map((faq, index) => (
-//           <TouchableOpacity key={index} style={styles.faqItem}>
-//             <Text style={styles.faqText}>{faq}</Text>
-//             <Ionicons name="chevron-forward" size={16} color="#900" />
-//           </TouchableOpacity>
-//         ))}
-//       </View>
-
-//       <View style={styles.footer}>
-//         <Text style={styles.footerPrice}>₹4000/-</Text>
-//         <TouchableOpacity style={styles.loginButton} onPress={handleButtonPress}>
-//           <Text style={styles.loginButtonText}>
-//             {isLoggedIn ? 'Continue to Pay' : 'Log in to Continue'}
-//           </Text>
-//         </TouchableOpacity>
-//       </View>
-//     </ScrollView>
-//   );
-// };
-
-// const styles = StyleSheet.create({
-//   container: { flex: 1, backgroundColor: '#fff', paddingHorizontal: 16 },
-//   headerCard: {
-//     backgroundColor: '#fff',
-//     borderRadius: 12,
-//     elevation: 2,
-//     marginTop: 12,
-//     alignItems: 'center',
-//   },
-//   carImage: {
-//     width: '100%',
-//     height: 200,
-//     borderTopLeftRadius: 12,
-//     borderTopRightRadius: 12,
-//   },
-//   headerInfo: {
-//     padding: 12,
-//     alignItems: 'center',
-//   },
-//   carName: { fontWeight: 'bold', fontSize: 18, color: '#000' },
-//   carDetails: { fontSize: 14, color: '#555', marginVertical: 4 },
-//   carPrice: { color: '#900', fontWeight: 'bold', fontSize: 14, marginVertical: 4 },
-//   dateBox: {
-//     backgroundColor: '#900',
-//     borderRadius: 8,
-//     paddingHorizontal: 8,
-//     paddingVertical: 4,
-//     alignItems: 'center',
-//   },
-//   dateBoxText: { color: '#fff', fontSize: 12 },
-//   section: {
-//     backgroundColor: '#fff',
-//     borderRadius: 12,
-//     elevation: 2,
-//     marginVertical: 12,
-//     padding: 12,
-//   },
-//   sectionTitle: { fontWeight: 'bold', fontSize: 16, color: '#000', marginBottom: 8 },
-//   featureList: { flexDirection: 'column' },
-//   featureItem: { flexDirection: 'row', alignItems: 'center', marginBottom: 8 },
-//   featureText: { fontSize: 14, color: '#333', flex: 1 },
-//   badge: {
-//     width: 10,
-//     height: 10,
-//     backgroundColor: '#900',
-//     borderRadius: 5,
-//     marginLeft: 8,
-//   },
-//   reviewCard: { padding: 12 },
-//   reviewHeader: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 8 },
-//   reviewName: { fontSize: 14, color: '#000' },
-//   reviewDate: { fontSize: 12, color: '#555' },
-//   reviewText: { fontSize: 14, color: '#333' },
-//   similarCarCard: {
-//     flexDirection: 'row',
-//     alignItems: 'center',
-//     backgroundColor: '#fff',
-//     borderRadius: 12,
-//     elevation: 2,
-//     marginVertical: 8,
-//     padding: 8,
-//   },
-//   similarCarImage: { width: 80, height: 60, borderRadius: 8 },
-//   similarCarInfo: { flex: 1, marginLeft: 8 },
-//   viewButton: {
-//     backgroundColor: '#900',
-//     paddingVertical: 4,
-//     paddingHorizontal: 12,
-//     borderRadius: 6,
-//     alignSelf: 'flex-start',
-//   },
-//   viewButtonText: { color: '#fff', fontSize: 12 },
-//   faqItem: {
-//     flexDirection: 'row',
-//     justifyContent: 'space-between',
-//     paddingVertical: 8,
-//     borderBottomWidth: 1,
-//     borderBottomColor: '#eee',
-//   },
-//   faqText: { fontSize: 14, color: '#333' },
-//   footer: {
-//     flexDirection: 'row',
-//     justifyContent: 'space-between',
-//     alignItems: 'center',
-//     backgroundColor: '#fff',
-//     borderRadius: 12,
-//     elevation: 2,
-//     padding: 12,
-//     marginVertical: 12,
-//   },
-//   footerPrice: { fontWeight: 'bold', fontSize: 18, color: '#000' },
-//   loginButton: {
-//     backgroundColor: '#900',
-//     paddingVertical: 8,
-//     paddingHorizontal: 12,
-//     borderRadius: 6,
-//   },
-//   loginButtonText: { color: '#fff', fontSize: 14 },
-// });
-
-// export default CarDetails;
-
-
-
-
-
-
-// import React from 'react';
-// import { View, Text, Image, StyleSheet, ScrollView, TouchableOpacity, ActivityIndicator } from 'react-native';
-// import Ionicons from 'react-native-vector-icons/Ionicons';
-// import { useRoute, useNavigation } from '@react-navigation/native';
-// import { useQuery } from '@tanstack/react-query';
-// import { useAuth } from '../context/AuthContext';
-// import { getVehicleById, VehicleDetails } from '../api/vehicles';
-// import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
-// import type { RouteProp } from '@react-navigation/native';
-// import { RootStackParamList } from '../navigation/navigation';
-
-// type CarDetailsNavigationProp = NativeStackNavigationProp<RootStackParamList, 'CarDetails'>;
-// type CarDetailsRouteProp = RouteProp<RootStackParamList, 'CarDetails'>;
-
-// const CarDetails: React.FC = () => {
-//   const route = useRoute<CarDetailsRouteProp>();
-//   const navigation = useNavigation<CarDetailsNavigationProp>();
-//   const { isLoggedIn } = useAuth();
-//   const { carId, startDate, endDate } = route.params || { carId: 1 };
-
-//   const { data: car, isLoading, error } = useQuery<VehicleDetails, Error>({
-//     queryKey: ['vehicle', carId],
-//     queryFn: () => getVehicleById(carId),
-//     enabled: isLoggedIn,
-//   });
-
-//   const formatDate = (dateStr?: string) => {
-//     if (!dateStr || isNaN(new Date(dateStr).getTime())) {
-//       return 'Invalid Date';
-//     }
-//     const date = new Date(dateStr);
-//     return `${date.toLocaleDateString('en-GB', { day: '2-digit', month: 'short' })}`;
-//   };
-
-//   const formatTime = (dateStr?: string) => {
-//     if (!dateStr || isNaN(new Date(dateStr).getTime())) {
-//       return '';
-//     }
-//     const date = new Date(dateStr);
-//     return `${date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true })}`;
-//   };
-
-//   const handleButtonPress = () => {
-//     if (!isLoggedIn) {
-//       navigation.navigate('Login', {
-//         redirectTo: { screen: 'CarDetails', params: { carId, startDate, endDate } },
-//       });
-//     } else if (car) {
-//       navigation.navigate('Payment', {
-//         carId: car.id,
-//         carName: car.name,
-//         price: car.pricePer10Km,
-//         startDate: startDate || new Date().toISOString(),
-//         endDate: endDate || new Date().toISOString(),
-//       });
-//     }
-//   };
-
-//   if (!isLoggedIn) {
-//     return (
-//       <View style={styles.container}>
-//         <Text style={styles.errorText}>Please log in to view car details.</Text>
-//         <TouchableOpacity style={styles.loginButton} onPress={handleButtonPress}>
-//           <Text style={styles.loginButtonText}>Go to Login</Text>
-//         </TouchableOpacity>
-//       </View>
-//     );
-//   }
-
-//   if (isLoading) {
-//     return (
-//       <View style={styles.container}>
-//         <ActivityIndicator size="large" color="#900" />
-//       </View>
-//     );
-//   }
-
-//   if (error) {
-//     return (
-//       <View style={styles.container}>
-//         <Text style={styles.errorText}>Error: {error.message}</Text>
-//       </View>
-//     );
-//   }
-
-//   if (!car) {
-//     return (
-//       <View style={styles.container}>
-//         <Text style={styles.errorText}>Car not found.</Text>
-//       </View>
-//     );
-//   }
-
-//   return (
-//     <ScrollView style={styles.container}>
-//       <View style={styles.headerCard}>
-//         <Image source={{ uri: `http://192.168.1.8:5000${car.imageUrl}` }} style={styles.carImage} />
-//         <View style={styles.headerInfo}>
-//           <Text style={styles.carName}>
-//             {car.name} <Ionicons name="star" size={16} color="#900" />
-//           </Text>
-//           <Text style={styles.carDetails}>
-//             {`${car.transmission} | ${car.fuelType} | Seat - ${car.seats}`}
-//           </Text>
-//           <View style={styles.dateBox}>
-//             <Text style={styles.dateBoxText}>{car.pricePer10Km}</Text>
-//             <Text style={styles.dateBoxText}>
-//               {`${formatDate(startDate)} - ${formatDate(endDate)} | ${formatTime(startDate)} - ${formatTime(endDate)}`}
-//             </Text>
-//           </View>
-//         </View>
-//       </View>
-
-//       <View style={styles.section}>
-//         <Text style={styles.sectionTitle}>Features</Text>
-//         <View style={styles.featureList}>
-//           {Object.entries(car.features || {}).map(([key, value], index) => (
-//             <View key={index} style={styles.featureItem}>
-//               <Text style={styles.featureText}>{key}: {value.toString()}</Text>
-//               <View style={styles.badge} />
-//             </View>
-//           ))}
-//         </View>
-//       </View>
-
-//       <View style={styles.section}>
-//         <Text style={styles.sectionTitle}>Benefits</Text>
-//         <View style={styles.featureList}>
-//           {Object.entries(car.benefits || {}).map(([key, value], index) => (
-//             <View key={index} style={styles.featureItem}>
-//               <Text style={styles.featureText}>{key}: {value.toString()}</Text>
-//               <View style={styles.badge} />
-//             </View>
-//           ))}
-//         </View>
-//       </View>
-
-//       <View style={styles.section}>
-//         <Text style={styles.sectionTitle}>Cancellation</Text>
-//         <View style={styles.featureItem}>
-//           <Text style={styles.featureText}>
-//             {car.cancellationPolicy || 'Cancellation Unavailable'}
-//           </Text>
-//           <View style={styles.badge} />
-//         </View>
-//       </View>
-
-//       <View style={styles.section}>
-//         <Text style={styles.sectionTitle}>Reviews</Text>
-//       </View>
-
-//       <View style={styles.section}>
-//         <Text style={styles.sectionTitle}>Similar Cars</Text>
-//       </View>
-
-//       <View style={styles.section}>
-//         <Text style={styles.sectionTitle}>FAQs</Text>
-//         {['How do I book a car?', 'How do I cancel a car?', 'What are the payment options?'].map((faq, index) => (
-//           <TouchableOpacity key={index} style={styles.faqItem}>
-//             <Text style={styles.faqText}>{faq}</Text>
-//             <Ionicons name="chevron-forward" size={16} color="#900" />
-//           </TouchableOpacity>
-//         ))}
-//       </View>
-
-//       <View style={styles.footer}>
-//         <Text style={styles.footerPrice}>₹{car.pricePerDay}/day</Text>
-//         <TouchableOpacity style={styles.loginButton} onPress={handleButtonPress}>
-//           <Text style={styles.loginButtonText}>
-//             {isLoggedIn ? 'Continue to Pay' : 'Log in to Continue'}
-//           </Text>
-//         </TouchableOpacity>
-//       </View>
-//     </ScrollView>
-//   );
-// };
-
-// const styles = StyleSheet.create({
-//   container: { flex: 1, backgroundColor: '#fff', paddingHorizontal: 16 },
-//   errorText: { color: '#900', fontSize: 16, textAlign: 'center', marginTop: 20 },
-//   loginButton: {
-//     backgroundColor: '#900',
-//     paddingVertical: 10,
-//     paddingHorizontal: 20,
-//     borderRadius: 8,
-//     alignSelf: 'center',
-//     marginTop: 20,
-//   },
-//   loginButtonText: { color: '#fff', fontSize: 16, fontWeight: 'bold' },
-//   headerCard: {
-//     backgroundColor: '#fff',
-//     borderRadius: 12,
-//     elevation: 2,
-//     marginTop: 12,
-//     alignItems: 'center',
-//   },
-//   carImage: {
-//     width: '100%',
-//     height: 200,
-//     borderTopLeftRadius: 12,
-//     borderTopRightRadius: 12,
-//   },
-//   headerInfo: {
-//     padding: 12,
-//     alignItems: 'center',
-//   },
-//   carName: { fontWeight: 'bold', fontSize: 18, color: '#000' },
-//   carDetails: { fontSize: 14, color: '#555', marginVertical: 4 },
-//   dateBox: {
-//     backgroundColor: '#900',
-//     borderRadius: 8,
-//     paddingHorizontal: 8,
-//     paddingVertical: 4,
-//     alignItems: 'center',
-//   },
-//   dateBoxText: { color: '#fff', fontSize: 12 },
-//   section: {
-//     backgroundColor: '#fff',
-//     borderRadius: 12,
-//     elevation: 2,
-//     marginVertical: 12,
-//     padding: 12,
-//   },
-//   sectionTitle: { fontWeight: 'bold', fontSize: 16, color: '#000', marginBottom: 8 },
-//   featureList: { flexDirection: 'column' },
-//   featureItem: { flexDirection: 'row', alignItems: 'center', marginBottom: 8 },
-//   featureText: { fontSize: 14, color: '#333', flex: 1 },
-//   badge: {
-//     width: 10,
-//     height: 10,
-//     backgroundColor: '#900',
-//     borderRadius: 5,
-//     marginLeft: 8,
-//   },
-//   reviewCard: { padding: 12 },
-//   reviewHeader: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 8 },
-//   reviewName: { fontSize: 14, color: '#000' },
-//   reviewDate: { fontSize: 12, color: '#555' },
-//   reviewText: { fontSize: 14, color: '#333' },
-//   similarCarCard: {
-//     flexDirection: 'row',
-//     alignItems: 'center',
-//     backgroundColor: '#fff',
-//     borderRadius: 12,
-//     elevation: 2,
-//     marginVertical: 8,
-//     padding: 8,
-//   },
-//   similarCarImage: { width: 80, height: 60, borderRadius: 8 },
-//   similarCarInfo: { flex: 1, marginLeft: 8 },
-//   viewButton: {
-//     backgroundColor: '#900',
-//     paddingVertical: 4,
-//     paddingHorizontal: 12,
-//     borderRadius: 6,
-//     alignSelf: 'flex-start',
-//   },
-//   viewButtonText: { color: '#fff', fontSize: 12 },
-//   faqItem: {
-//     flexDirection: 'row',
-//     justifyContent: 'space-between',
-//     paddingVertical: 8,
-//     borderBottomWidth: 1,
-//     borderBottomColor: '#eee',
-//   },
-//   faqText: { fontSize: 14, color: '#333' },
-//   footer: {
-//     flexDirection: 'row',
-//     justifyContent: 'space-between',
-//     alignItems: 'center',
-//     backgroundColor: '#fff',
-//     borderRadius: 12,
-//     elevation: 2,
-//     padding: 12,
-//     marginVertical: 12,
-//   },
-//   footerPrice: { fontWeight: 'bold', fontSize: 18, color: '#000' },
-// });
-
-// export default CarDetails;
-
-
-
-
-// import React from 'react';
-// import { View, Text, Image, StyleSheet, ScrollView, TouchableOpacity, ActivityIndicator } from 'react-native';
-// import Ionicons from 'react-native-vector-icons/Ionicons';
-// import { useRoute, useNavigation } from '@react-navigation/native';
-// import { useQuery } from '@tanstack/react-query';
-// import { useAuth } from '../context/AuthContext';
-// import { getVehicleById, VehicleDetails } from '../api/vehicles';
-// import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
-// import type { RouteProp } from '@react-navigation/native';
-// import { RootStackParamList } from '../navigation/navigation';
-
-// type CarDetailsNavigationProp = NativeStackNavigationProp<RootStackParamList, 'CarDetails'>;
-// type CarDetailsRouteProp = RouteProp<RootStackParamList, 'CarDetails'>;
-
-// const CarDetails: React.FC = () => {
-//   const route = useRoute<CarDetailsRouteProp>();
-//   const navigation = useNavigation<CarDetailsNavigationProp>();
-//   const { isLoggedIn } = useAuth();
-//   const { carId, startDate, endDate, isWithDriver } = route.params || { carId: 1 };
-
-//   const { data: car, isLoading, error } = useQuery<VehicleDetails, Error>({
-//     queryKey: ['vehicle', carId],
-//     queryFn: () => getVehicleById(carId),
-//     enabled: isLoggedIn,
-//   });
-
-//   const formatDate = (dateStr?: string) => {
-//     if (!dateStr || isNaN(new Date(dateStr).getTime())) {
-//       return 'Invalid Date';
-//     }
-//     const date = new Date(dateStr);
-//     return `${date.toLocaleDateString('en-GB', { day: '2-digit', month: 'short' })}`;
-//   };
-
-//   const formatTime = (dateStr?: string) => {
-//     if (!dateStr || isNaN(new Date(dateStr).getTime())) {
-//       return '';
-//     }
-//     const date = new Date(dateStr);
-//     return `${date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true })}`;
-//   };
-
-//   const handleButtonPress = () => {
-//     if (!isLoggedIn) {
-//       navigation.navigate('Login', {
-//         redirectTo: { screen: 'CarDetails', params: { carId, startDate, endDate, isWithDriver } },
-//       });
-//     } else if (car) {
-//       navigation.navigate('Payment', {
-//         carId: car.id,
-//         carName: car.name,
-//         price: car.pricePer10Km,
-//         startDate: startDate || new Date().toISOString(),
-//         endDate: endDate || new Date().toISOString(),
-//         isWithDriver,
-//       });
-//     }
-//   };
-
-//   const handleViewSimilarCar = (similarCarId: number) => {
-//     navigation.navigate('CarDetails', {
-//       carId: similarCarId,
-//       startDate,
-//       endDate,
-//       isWithDriver,
-//     });
-//   };
-
-//   if (!isLoggedIn) {
-//     return (
-//       <View style={styles.container}>
-//         <Text style={styles.errorText}>Please log in to view car details.</Text>
-//         <TouchableOpacity style={styles.loginButton} onPress={handleButtonPress}>
-//           <Text style={styles.loginButtonText}>Go to Login</Text>
-//         </TouchableOpacity>
-//       </View>
-//     );
-//   }
-
-//   if (isLoading) {
-//     return (
-//       <View style={styles.container}>
-//         <ActivityIndicator size="large" color="#900" />
-//       </View>
-//     );
-//   }
-
-//   if (error) {
-//     return (
-//       <View style={styles.container}>
-//         <Text style={styles.errorText}>Error: {error.message}</Text>
-//       </View>
-//     );
-//   }
-
-//   if (!car) {
-//     return (
-//       <View style={styles.container}>
-//         <Text style={styles.errorText}>Car not found.</Text>
-//       </View>
-//     );
-//   }
-
-//   return (
-//     <ScrollView style={styles.container}>
-//       <View style={styles.headerCard}>
-//         <Image
-//           source={{ uri: `http://192.168.1.8:5000${car.imageUrl}` }}
-//           style={styles.carImage}
-//           resizeMode="cover"
-//         />
-//         <View style={styles.headerInfo}>
-//           <Text style={styles.carName}>
-//             {car.name} <Ionicons name="star" size={16} color="#900" />
-//           </Text>
-//           <Text style={styles.carDetails}>
-//             {`${car.transmission} | ${car.fuelType} | Seat - ${car.seats}`}
-//           </Text>
-//           <View style={styles.dateBox}>
-//             <Text style={styles.dateBoxText}>{car.pricePer10Km}</Text>
-//             <Text style={styles.dateBoxText}>
-//               {`${formatDate(startDate)} - ${formatDate(endDate)} | ${formatTime(startDate)} - ${formatTime(endDate)}`}
-//             </Text>
-//           </View>
-//         </View>
-//       </View>
-
-//       <View style={styles.section}>
-//         <Text style={styles.sectionTitle}>Features</Text>
-//         <View style={styles.featureList}>
-//           {Object.entries(car.features || {}).map(([key, value], index) => (
-//             <View key={index} style={styles.featureItem}>
-//               <Text style={styles.featureText}>{key}: {value.toString()}</Text>
-//               <View style={styles.badge} />
-//             </View>
-//           ))}
-//         </View>
-//       </View>
-
-//       <View style={styles.section}>
-//         <Text style={styles.sectionTitle}>Benefits</Text>
-//         <View style={styles.featureList}>
-//           {Object.entries(car.benefits || {}).map(([key, value], index) => (
-//             <View key={index} style={styles.featureItem}>
-//               <Text style={styles.featureText}>{key}: {value.toString()}</Text>
-//               <View style={styles.badge} />
-//             </View>
-//           ))}
-//         </View>
-//       </View>
-
-//       <View style={styles.section}>
-//         <Text style={styles.sectionTitle}>Cancellation</Text>
-//         <View style={styles.featureItem}>
-//           <Text style={styles.featureText}>
-//             {car.cancellationPolicy || 'Cancellation Unavailable'}
-//           </Text>
-//           <View style={styles.badge} />
-//         </View>
-//       </View>
-
-//       <View style={styles.section}>
-//         <Text style={styles.sectionTitle}>Reviews</Text>
-//         <Text style={styles.reviewText}>
-//           Reviews not implemented. Add API call to fetch reviews for vehicle ID {carId}.
-//         </Text>
-//         {/* Example static review; replace with API call */}
-//         <View style={styles.reviewCard}>
-//           <View style={styles.reviewHeader}>
-//             <Text style={styles.reviewName}>
-//               Amit Kumar <Ionicons name="star" size={16} color="#900" />
-//             </Text>
-//             <Text style={styles.reviewDate}>18 Apr 2025 | 04:26:50 PM</Text>
-//           </View>
-//           <Text style={styles.reviewText}>
-//             Rented a car just a day before and got an affordable price. The host was very responsive and friendly.
-//           </Text>
-//         </View>
-//       </View>
-
-//       <View style={styles.section}>
-//         <Text style={styles.sectionTitle}>Similar Cars</Text>
-//         <Text style={styles.reviewText}>
-//           Similar cars not implemented. Add API call to fetch similar vehicles.
-//         </Text>
-//         {/* Example static similar car; replace with API call */}
-//         {[
-//           {
-//             id: 2,
-//             name: 'Similar Car',
-//             pricePer10Km: '₹400/10km',
-//             transmission: 'Manual',
-//             fuelType: 'Petrol',
-//             seats: 6,
-//             imageUrl: '/assets/default-car.png',
-//           },
-//         ].map((similarCar) => (
-//           <View key={similarCar.id} style={styles.similarCarCard}>
-//             <Image
-//               source={{ uri: `http://192.168.1.8:5000${similarCar.imageUrl}` }}
-//               style={styles.similarCarImage}
-//               resizeMode="cover"
-//             />
-//             <View style={styles.similarCarInfo}>
-//               <Text style={styles.carName}>{similarCar.name}</Text>
-//               <Text style={styles.carPrice}>{similarCar.pricePer10Km}</Text>
-//               <Text style={styles.carDetails}>
-//                 {`${similarCar.transmission} | ${similarCar.fuelType} | Seat - ${similarCar.seats}`}
-//               </Text>
-//               <TouchableOpacity
-//                 style={styles.viewButton}
-//                 onPress={() => handleViewSimilarCar(similarCar.id)}
-//               >
-//                 <Text style={styles.viewButtonText}>VIEW</Text>
-//               </TouchableOpacity>
-//             </View>
-//           </View>
-//         ))}
-//       </View>
-
-//       <View style={styles.section}>
-//         <Text style={styles.sectionTitle}>FAQs</Text>
-//         {['How do I book a car?', 'How do I cancel a car?', 'What are the payment options?'].map(
-//           (faq, index) => (
-//             <TouchableOpacity key={index} style={styles.faqItem}>
-//               <Text style={styles.faqText}>{faq}</Text>
-//               <Ionicons name="chevron-forward" size={16} color="#900" />
-//             </TouchableOpacity>
-//           )
-//         )}
-//       </View>
-
-//       <View style={styles.footer}>
-//         <Text style={styles.footerPrice}>₹{car.pricePerDay}/day</Text>
-//         <TouchableOpacity style={styles.loginButton} onPress={handleButtonPress}>
-//           <Text style={styles.loginButtonText}>
-//             {isLoggedIn ? 'Continue to Pay' : 'Log in to Continue'}
-//           </Text>
-//         </TouchableOpacity>
-//       </View>
-//     </ScrollView>
-//   );
-// };
-
-// const styles = StyleSheet.create({
-//   container: { flex: 1, backgroundColor: '#fff', paddingHorizontal: 16 },
-//   errorText: { color: '#900', fontSize: 16, textAlign: 'center', marginTop: 20 },
-//   loginButton: {
-//     backgroundColor: '#900',
-//     paddingVertical: 10,
-//     paddingHorizontal: 20,
-//     borderRadius: 8,
-//     alignSelf: 'center',
-//     marginTop: 20,
-//   },
-//   loginButtonText: { color: '#fff', fontSize: 16, fontWeight: 'bold' },
-//   headerCard: {
-//     backgroundColor: '#fff',
-//     borderRadius: 12,
-//     elevation: 2,
-//     marginTop: 12,
-//     alignItems: 'center',
-//   },
-//   carImage: {
-//     width: '100%',
-//     height: 200,
-//     borderTopLeftRadius: 12,
-//     borderTopRightRadius: 12,
-//   },
-//   headerInfo: {
-//     padding: 12,
-//     alignItems: 'center',
-//   },
-//   carName: { fontWeight: 'bold', fontSize: 18, color: '#000' },
-//   carDetails: { fontSize: 14, color: '#555', marginVertical: 4 },
-//   carPrice: { color: '#900', fontWeight: 'bold', fontSize: 14, marginVertical: 4 },
-//   dateBox: {
-//     backgroundColor: '#900',
-//     borderRadius: 8,
-//     paddingHorizontal: 8,
-//     paddingVertical: 4,
-//     alignItems: 'center',
-//   },
-//   dateBoxText: { color: '#fff', fontSize: 12 },
-//   section: {
-//     backgroundColor: '#fff',
-//     borderRadius: 12,
-//     elevation: 2,
-//     marginVertical: 12,
-//     padding: 12,
-//   },
-//   sectionTitle: { fontWeight: 'bold', fontSize: 16, color: '#000', marginBottom: 8 },
-//   featureList: { flexDirection: 'column' },
-//   featureItem: { flexDirection: 'row', alignItems: 'center', marginBottom: 8 },
-//   featureText: { fontSize: 14, color: '#333', flex: 1 },
-//   badge: {
-//     width: 10,
-//     height: 10,
-//     backgroundColor: '#900',
-//     borderRadius: 5,
-//     marginLeft: 8,
-//   },
-//   reviewCard: { padding: 12 },
-//   reviewHeader: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 8 },
-//   reviewName: { fontSize: 14, color: '#000' },
-//   reviewDate: { fontSize: 12, color: '#555' },
-//   reviewText: { fontSize: 14, color: '#333' },
-//   similarCarCard: {
-//     flexDirection: 'row',
-//     alignItems: 'center',
-//     backgroundColor: '#fff',
-//     borderRadius: 12,
-//     elevation: 2,
-//     marginVertical: 8,
-//     padding: 8,
-//   },
-//   similarCarImage: { width: 80, height: 60, borderRadius: 8 },
-//   similarCarInfo: { flex: 1, marginLeft: 8 },
-//   viewButton: {
-//     backgroundColor: '#900',
-//     paddingVertical: 4,
-//     paddingHorizontal: 12,
-//     borderRadius: 6,
-//     alignSelf: 'flex-start',
-//   },
-//   viewButtonText: { color: '#fff', fontSize: 12 },
-//   faqItem: {
-//     flexDirection: 'row',
-//     justifyContent: 'space-between',
-//     paddingVertical: 8,
-//     borderBottomWidth: 1,
-//     borderBottomColor: '#eee',
-//   },
-//   faqText: { fontSize: 14, color: '#333' },
-//   footer: {
-//     flexDirection: 'row',
-//     justifyContent: 'space-between',
-//     alignItems: 'center',
-//     backgroundColor: '#fff',
-//     borderRadius: 12,
-//     elevation: 2,
-//     padding: 12,
-//     marginVertical: 12,
-//   },
-//   footerPrice: { fontWeight: 'bold', fontSize: 18, color: '#000' },
-// });
-
-// export default CarDetails;
-
-
-
-
-import React, { useState } from 'react';
-import { View, Text, Image, StyleSheet, ScrollView, TouchableOpacity, ActivityIndicator } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, Image, StyleSheet, ScrollView, TouchableOpacity, ActivityIndicator, Dimensions, FlatList } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useRoute, useNavigation } from '@react-navigation/native';
-import { useQuery } from '@tanstack/react-query';
 import { useAuth } from '../context/AuthContext';
-import { getVehicleById, VehicleDetails } from '../api/vehicles';
 import PriceBreakup from './PriceBreakup';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import type { RouteProp } from '@react-navigation/native';
 import { RootStackParamList } from '../navigation/navigation';
+import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { baseURL } from '../constant/Base_Url';
 
 type CarDetailsNavigationProp = NativeStackNavigationProp<RootStackParamList, 'CarDetails'>;
 type CarDetailsRouteProp = RouteProp<RootStackParamList, 'CarDetails'>;
+
+interface CarData {
+  id: number;
+  name: string;
+  number: string;
+  typeId: number;
+  fuel: string;
+  transmission: string;
+  ac: boolean;
+  seats: number;
+  available: boolean;
+  location: string | null;
+  latitude: number | null;
+  longitude: number | null;
+  features: string | null;
+  benefits: string | null;
+  cancellationPolicy: string;
+  pricePerKm: number;
+  pricePerDay: number;
+  driverCharge: number;
+  convenienceFee: number;
+  tripProtectionFee: number;
+  deposit: number | null;
+  images: { url: string; public_id: string };
+  rating?: number;
+}
+
+interface SimilarCar {
+  id: number;
+  name: string;
+  pricePerKm: number;
+  transmission: string;
+  fuel: string;
+  seats: number;
+  imageUrl: string;
+}
+
+const { width } = Dimensions.get('window');
 
 const CarDetails: React.FC = () => {
   const route = useRoute<CarDetailsRouteProp>();
@@ -947,48 +58,130 @@ const CarDetails: React.FC = () => {
   const { isLoggedIn } = useAuth();
   const { carId, startDate, endDate, isWithDriver } = route.params || { carId: 1 };
   const [isPriceBreakupOpen, setIsPriceBreakupOpen] = useState(false);
+  const [token, setToken] = useState<string | null>(null);
+  const [carDetails, setCarDetails] = useState<CarData | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [similarCars, setSimilarCars] = useState<SimilarCar[]>([]);
+  const[issimilar, setIsSimilar] = useState(false);
+  const getToken = async () => {
+    const value = await AsyncStorage.getItem('authToken');
+    setToken(value);
+  };
 
-  const { data: car, isLoading, error } = useQuery<VehicleDetails, Error>({
-    queryKey: ['vehicle', carId],
-    queryFn: () => getVehicleById(carId),
-    enabled: isLoggedIn,
-  });
+  const fetchCarDetails = () => {
+    setIsLoading(true);
+    setError(null);
+    axios
+      .get(`${baseURL}/vehicles/${carId}`, {
+        withCredentials: true,
+        headers: {
+          'Content-Type': 'application/json',
+          // Authorization: `Bearer ${token}`, // Uncomment if token is required
+        },
+      })
+      .then((response) => {
+        const data = response.data.data;
+        console.log('Car details fetched:', data);
+        if (!data) {
+          setError('Car not found');
+          return;
+        }
+        setCarDetails({
+          id: data.id,
+          name: data.name,
+          number: data.number,
+          typeId: data.typeId,
+          fuel: data.fuel,
+          transmission: data.transmission,
+          ac: data.ac,
+          seats: data.seats,
+          available: data.available,
+          location: data.location || 'Not specified',
+          latitude: data.latitude || null,
+          longitude: data.longitude || null,
+          features: data.features,
+          benefits: data.benefits || 'No benefits specified',
+          cancellationPolicy: data.cancellationPolicy,
+          pricePerKm: data.pricePerKm,
+          pricePerDay: data.pricePerDay,
+          driverCharge: data.driverCharge,
+          convenienceFee: data.convenienceFee,
+          tripProtectionFee: data.tripProtectionFee,
+          deposit: data.deposit || 0,
+          images: data.images,
+          rating: 4.5, // Default rating; replace with API data if available
+        });
+      })
+      .catch((err) => {
+        setError('Failed to fetch car details');
+        console.log('Error fetching car details:', err);
+      })
+      .finally(() => setIsLoading(false));
+  };
+
+  const getSimilarCars = async () => {
+    try {
+      const response = await axios.get(`${baseURL}/vehicles?page=1&limit=4`, {
+        withCredentials: true,
+        headers: {
+          'Content-Type': 'application/json',
+          // Authorization: `Bearer ${token}`, // Uncomment if token is required
+        },
+      });
+      console.log('Similar cars fetched:', response.data.data);
+      setSimilarCars(response.data.data.cars.map((car: any) => ({
+        id: car.id,
+        name: car.name,
+        pricePerKm: car.pricePerKm,
+        transmission: car.transmission,
+        fuel: car.fuel,
+        seats: car.seats,
+        imageUrl: car.images?.url || 'https://via.placeholder.com/300',
+      })));
+    } catch (err) {
+      console.log('Error fetching similar cars:', err);
+    }
+  };
+
+  useEffect(() => {
+    getToken();
+      fetchCarDetails();
+      getSimilarCars();
+   
+  }, [isLoggedIn, token,issimilar]);
 
   const formatDate = (dateStr?: string) => {
-    if (!dateStr || isNaN(new Date(dateStr).getTime())) {
-      return 'Invalid Date';
-    }
+    if (!dateStr || isNaN(new Date(dateStr).getTime())) return 'Invalid Date';
     const date = new Date(dateStr);
     return `${date.toLocaleDateString('en-GB', { day: '2-digit', month: 'short' })}`;
   };
 
   const formatTime = (dateStr?: string) => {
-    if (!dateStr || isNaN(new Date(dateStr).getTime())) {
-      return '';
-    }
+    if (!dateStr || isNaN(new Date(dateStr).getTime())) return '';
     const date = new Date(dateStr);
     return `${date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true })}`;
   };
 
   const handleButtonPress = () => {
-    if (!isLoggedIn) {
+   
       navigation.navigate('Login', {
         redirectTo: { screen: 'CarDetails', params: { carId, startDate, endDate, isWithDriver } },
       });
-    } else if (car) {
+   if (carDetails) {
       navigation.navigate('Payment', {
-        carId: car.id,
-        carName: car.name,
-        price: car.pricePer10Km,
+        carId: carDetails.id,
+        carName: carDetails.name,
+        price: `₹${carDetails.pricePerKm}/10km`,
         startDate: startDate || new Date().toISOString(),
         endDate: endDate || new Date().toISOString(),
         isWithDriver,
       });
     }
   };
-  
 
   const handleViewSimilarCar = (similarCarId: number) => {
+    setIsSimilar(issimilar => !issimilar);
     navigation.navigate('CarDetails', {
       carId: similarCarId,
       startDate,
@@ -997,21 +190,10 @@ const CarDetails: React.FC = () => {
     });
   };
 
-  if (!isLoggedIn) {
-    return (
-      <View style={styles.container}>
-        <Text style={styles.errorText}>Please log in to view car details.</Text>
-        <TouchableOpacity style={styles.loginButton} onPress={handleButtonPress}>
-          <Text style={styles.loginButtonText}>Go to Login</Text>
-        </TouchableOpacity>
-      </View>
-    );
-  }
-
   if (isLoading) {
     return (
       <View style={styles.container}>
-        <ActivityIndicator size="large" color="#900" />
+        <ActivityIndicator size="large" color="#006400" />
       </View>
     );
   }
@@ -1019,12 +201,12 @@ const CarDetails: React.FC = () => {
   if (error) {
     return (
       <View style={styles.container}>
-        <Text style={styles.errorText}>Error: {error.message}</Text>
+        <Text style={styles.errorText}>{error}</Text>
       </View>
     );
   }
 
-  if (!car) {
+  if (!carDetails) {
     return (
       <View style={styles.container}>
         <Text style={styles.errorText}>Car not found.</Text>
@@ -1032,24 +214,42 @@ const CarDetails: React.FC = () => {
     );
   }
 
+  const images = [carDetails.images].map((img, index) => ({ id: index + 1, url: img.url }));
+
+  const reviews = [
+    {
+      id: 1,
+      name: 'Amit Kumar',
+      rating: 4.5,
+      date: '06 Aug 2025 | 12:26 PM',
+      text: 'Great experience with the Toyota Camry! Very comfortable and easy to book.',
+    },
+  ];
+
   return (
     <>
       <ScrollView style={styles.container}>
         <View style={styles.headerCard}>
-          <Image
-            source={{ uri: `http://192.168.1.8:5000${car.imageUrl}` }}
-            style={styles.carImage}
-            resizeMode="cover"
+          <FlatList
+            data={images}
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            keyExtractor={(item) => item.id.toString()}
+            renderItem={({ item }) => (
+              <Image source={{ uri: item.url }} style={styles.carImage} resizeMode="cover" />
+            )}
+            style={styles.imageScroll}
           />
           <View style={styles.headerInfo}>
             <Text style={styles.carName}>
-              {car.name} <Ionicons name="star" size={16} color="#900" />
+              {carDetails.name} <Ionicons name="star" size={16} color="#900" />
+              <Text style={styles.ratingText}> {carDetails.rating} (12)</Text>
             </Text>
-            <Text style={styles.carDetails}>
-              {`${car.transmission} | ${car.fuelType} | Seat - ${car.seats}`}
-            </Text>
+            <Text style={styles.carDetails}>{`${carDetails.transmission} | ${carDetails.fuel} | ${carDetails.seats} Seats`}</Text>
+            <Text style={styles.locationText}>Location: {carDetails.location}</Text>
+            <Text style={styles.carPrice}>Vehicle NO: {carDetails.number}</Text>
             <View style={styles.dateBox}>
-              <Text style={styles.dateBoxText}>{car.pricePer10Km}</Text>
+              <Text style={styles.dateBoxText}>₹{carDetails.pricePerKm}/10km</Text>
               <Text style={styles.dateBoxText}>
                 {`${formatDate(startDate)} - ${formatDate(endDate)} | ${formatTime(startDate)} - ${formatTime(endDate)}`}
               </Text>
@@ -1058,133 +258,102 @@ const CarDetails: React.FC = () => {
         </View>
 
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Features</Text>
-          <View style={styles.featureList}>
-            {Object.entries(car.features || {}).map(([key, value], index) => (
-              <View key={index} style={styles.featureItem}>
-                <Text style={styles.featureText}>{key}: {value.toString()}</Text>
-                <View style={styles.badge} />
-              </View>
-            ))}
-          </View>
-        </View>
-
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Benefits</Text>
-          <View style={styles.featureList}>
-            {Object.entries(car.benefits || {}).map(([key, value], index) => (
-              <View key={index} style={styles.featureItem}>
-                <Text style={styles.featureText}>{key}: {value.toString()}</Text>
-                <View style={styles.badge} />
-              </View>
-            ))}
-          </View>
-        </View>
-
-        <View style={styles.section}>
           <Text style={styles.sectionTitle}>Cancellation</Text>
           <View style={styles.featureItem}>
-            <Text style={styles.featureText}>
-              {car.cancellationPolicy || 'Cancellation Unavailable'}
-            </Text>
+            <Text style={styles.featureText}>{carDetails.cancellationPolicy}</Text>
             <View style={styles.badge} />
           </View>
         </View>
 
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Reviews</Text>
-          <Text style={styles.reviewText}>
-            Reviews not implemented. Add API call to fetch reviews for vehicle ID {carId}.
-          </Text>
-          <View style={styles.reviewCard}>
-            <View style={styles.reviewHeader}>
-              <Text style={styles.reviewName}>
-                Amit Kumar <Ionicons name="star" size={16} color="#900" />
-              </Text>
-              <Text style={styles.reviewDate}>18 Apr 2025 | 04:26:50 PM</Text>
-            </View>
-            <Text style={styles.reviewText}>
-              Rented a car just a day before and got an affordable price. The host was very responsive and friendly.
-            </Text>
+          <Text style={styles.sectionTitle}>Feature</Text>
+          <View style={styles.featureItem}>
+            <Text style={styles.featureText}>{carDetails.features || 'No features specified'},</Text>
+            {carDetails.ac ? (
+              <Text style={styles.featureText}>AC</Text>
+            ) : (
+              <Text style={styles.featureText}>Non-AC</Text>
+            )}
           </View>
         </View>
 
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Similar Cars</Text>
-          <Text style={styles.reviewText}>
-            Similar cars not implemented. Add API call to fetch similar vehicles.
-          </Text>
-          {[
-            {
-              id: 2,
-              name: 'Similar Car',
-              pricePer10Km: '₹400/10km',
-              transmission: 'Manual',
-              fuelType: 'Petrol',
-              seats: 6,
-              imageUrl: '/assets/default-car.png',
-            },
-          ].map((similarCar) => (
-            <View key={similarCar.id} style={styles.similarCarCard}>
-              <Image
-                source={{ uri: `http://192.168.1.8:5000${similarCar.imageUrl}` }}
-                style={styles.similarCarImage}
-                resizeMode="cover"
-              />
-              <View style={styles.similarCarInfo}>
-                <Text style={styles.carName}>{similarCar.name}</Text>
-                <Text style={styles.carPrice}>{similarCar.pricePer10Km}</Text>
-                <Text style={styles.carDetails}>
-                  {`${similarCar.transmission} | ${similarCar.fuelType} | Seat - ${similarCar.seats}`}
+          <Text style={styles.sectionTitle}>Reviews</Text>
+          {reviews.map((review) => (
+            <View key={review.id} style={styles.reviewCard}>
+              <View style={styles.reviewHeader}>
+                <Text style={styles.reviewName}>
+                  {review.name} <Ionicons name="star" size={16} color="#900" />
+                  <Text style={styles.ratingText}> {review.rating}</Text>
                 </Text>
-                <TouchableOpacity
-                  style={styles.viewButton}
-                  onPress={() => handleViewSimilarCar(similarCar.id)}
-                >
-                  <Text style={styles.viewButtonText}>VIEW</Text>
-                </TouchableOpacity>
+                <Text style={styles.reviewDate}>{review.date}</Text>
               </View>
+              <Text style={styles.reviewText}>{review.text}</Text>
             </View>
           ))}
         </View>
 
+        <View style={styles.similarsection}>
+          <Text style={styles.sectionTitle}>Similar Cars</Text>
+          <FlatList
+            data={similarCars}
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            keyExtractor={(item) => item.id.toString()}
+            renderItem={({ item }) => (
+              <View style={styles.similarCarCard}>
+                <Image
+                  source={{ uri: item.imageUrl }}
+                  style={styles.similarCarImage}
+                  resizeMode="cover"
+                />
+                <View style={styles.similarCarInfo}>
+                  <Text style={styles.carName}>{item.name}</Text>
+                  <Text style={styles.carPrice}>₹{item.pricePerKm}/10km</Text>
+                  <Text style={styles.carDetails}>
+                    {`${item.transmission} | ${item.fuel} | ${item.seats} Seats`}
+                  </Text>
+                  <TouchableOpacity style={styles.viewButton} onPress={() => handleViewSimilarCar(item.id)}>
+                    <Text style={styles.viewButtonText}>VIEW</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            )}
+            style={styles.carousel}
+          />
+        </View>
+
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>FAQs</Text>
-          {['How do I book a car?', 'How do I cancel a car?', 'What are the payment options?'].map(
-            (faq, index) => (
-              <TouchableOpacity key={index} style={styles.faqItem}>
-                <Text style={styles.faqText}>{faq}</Text>
-                <Ionicons name="chevron-forward" size={16} color="#900" />
-              </TouchableOpacity>
-            )
-          )}
-        </View>
-
-        <View style={styles.footer}>
-          <View style={styles.footerLeft}>
-            <Text style={styles.footerPrice}>₹{car.pricePerDay}/day</Text>
-            <TouchableOpacity onPress={() => setIsPriceBreakupOpen(true)}>
-              <Text style={styles.priceBreakupLink}>View Price Breakup</Text>
+          {['How do I book a car?', 'How do I cancel a car?', 'What are the payment options?'].map((faq, index) => (
+            <TouchableOpacity key={index} style={styles.faqItem}>
+              <Text style={styles.faqText}>{faq}</Text>
+              <Ionicons name="chevron-forward" size={16} color="#900" />
             </TouchableOpacity>
-          </View>
-          <TouchableOpacity style={styles.loginButton} onPress={handleButtonPress}>
-            <Text style={styles.loginButtonText}>
-              {isLoggedIn ? 'Continue to Pay' : 'Log in to Continue'}
-            </Text>
-          </TouchableOpacity>
+          ))}
         </View>
       </ScrollView>
-
-      {isPriceBreakupOpen && car && (
+      <View style={styles.footer}>
+        <View style={styles.footerLeft}>
+          <Text style={styles.footerPrice}>₹{carDetails.pricePerDay}/day</Text>
+          <TouchableOpacity onPress={() => setIsPriceBreakupOpen(true)}>
+            <Text style={styles.priceBreakupLink}>View Price Breakup</Text>
+          </TouchableOpacity>
+        </View>
+        <TouchableOpacity style={styles.proceedButton} onPress={handleButtonPress}>
+          <Text style={styles.proceedButtonText}>Proceed to Pay</Text>
+        </TouchableOpacity>
+      </View>
+      {isPriceBreakupOpen && carDetails && (
         <PriceBreakup
           visible={isPriceBreakupOpen}
           onClose={() => setIsPriceBreakupOpen(false)}
           pricingDetails={{
-            pricePerDay: car.pricePerDay,
-            driverCharge: isWithDriver ? car.driverCharge : 0,
-            deposit: car.deposit,
-            convenienceFee: 0,
-            tripProtectionFee: 0,
+            pricePerDay: carDetails.pricePerDay,
+            driverCharge: isWithDriver ? carDetails.driverCharge : 0,
+            deposit: carDetails.deposit || 0,
+            convenienceFee: carDetails.convenienceFee,
+            tripProtectionFee: carDetails.tripProtectionFee,
             startDate,
             endDate,
           }}
@@ -1195,10 +364,10 @@ const CarDetails: React.FC = () => {
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#fff', paddingHorizontal: 16 },
+  container: { flex: 1, backgroundColor: '#f9f9f9', paddingHorizontal: 16 },
   errorText: { color: '#900', fontSize: 16, textAlign: 'center', marginTop: 20 },
   loginButton: {
-    backgroundColor: '#900',
+    backgroundColor: '#006400',
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderRadius: 8,
@@ -1208,70 +377,97 @@ const styles = StyleSheet.create({
   headerCard: {
     backgroundColor: '#fff',
     borderRadius: 12,
-    elevation: 2,
+    elevation: 5,
     marginTop: 12,
-    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 6,
   },
+  imageScroll: { width: '100%', height: 200 },
   carImage: {
-    width: '100%',
+    width: width - 32,
     height: 200,
     borderTopLeftRadius: 12,
     borderTopRightRadius: 12,
+    marginRight: 8,
   },
   headerInfo: {
-    padding: 12,
+    padding: 16,
     alignItems: 'center',
     width: '100%',
   },
-  carName: { fontWeight: 'bold', fontSize: 18, color: '#000' },
+  carName: { fontWeight: 'bold', fontSize: 20, color: '#006400' },
+  ratingText: { fontSize: 14, color: '#900', marginLeft: 4 },
   carDetails: { fontSize: 14, color: '#555', marginVertical: 4 },
-  carPrice: { color: '#900', fontWeight: 'bold', fontSize: 14, marginVertical: 4 },
+  locationText: { fontSize: 12, color: '#666', marginBottom: 8 },
+  carPrice: { fontSize: 16, fontWeight: 'bold', color: '#006400' },
   dateBox: {
-    backgroundColor: '#900',
+    backgroundColor: '#006400',
     borderRadius: 8,
-    paddingHorizontal: 8,
-    paddingVertical: 4,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
     alignItems: 'center',
-    marginTop: 4,
   },
   dateBoxText: { color: '#fff', fontSize: 12 },
   section: {
     backgroundColor: '#fff',
     borderRadius: 12,
-    elevation: 2,
+    elevation: 5,
     marginVertical: 12,
-    padding: 12,
+    padding: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 6,
   },
-  sectionTitle: { fontWeight: 'bold', fontSize: 16, color: '#000', marginBottom: 8 },
-  featureList: { flexDirection: 'column' },
-  featureItem: { flexDirection: 'row', alignItems: 'center', marginBottom: 8 },
+  sectionTitle: { fontWeight: 'bold', fontSize: 18, color: '#006400', marginBottom: 12 },
+  featureItem: { flexDirection: 'row', alignItems: 'center', marginBottom: 10 },
   featureText: { fontSize: 14, color: '#333', flex: 1 },
   badge: {
-    width: 10,
-    height: 10,
-    backgroundColor: '#900',
-    borderRadius: 5,
+    width: 12,
+    height: 12,
+    backgroundColor: '#006400',
+    borderRadius: 6,
     marginLeft: 8,
   },
-  reviewCard: { padding: 12 },
+  reviewCard: { padding: 12, borderBottomWidth: 1, borderBottomColor: '#eee' },
   reviewHeader: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 8 },
-  reviewName: { fontSize: 14, color: '#000' },
-  reviewDate: { fontSize: 12, color: '#555' },
-  reviewText: { fontSize: 14, color: '#333' },
+  reviewName: { fontSize: 14, color: '#000', fontWeight: '500' },
+  reviewDate: { fontSize: 12, color: '#666' },
+  reviewText: { fontSize: 14, color: '#333', marginTop: 4 },
+  similarsection: {
+    backgroundColor: '#fff',
+    borderRadius: 12,
+    height: 250,
+    elevation: 5,
+    marginVertical: 12, 
+    padding: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 6,
+  },
   similarCarCard: {
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: '#fff',
     borderRadius: 12,
-    elevation: 2,
-    marginVertical: 8,
+    elevation: 5,
+    marginRight: 8,
     padding: 8,
+    height:"90%",
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 6,
+    width: width * 0.8, // Fixed width for carousel items
   },
-  similarCarImage: { width: 80, height: 60, borderRadius: 8 },
-  similarCarInfo: { flex: 1, marginLeft: 8 },
+  similarCarImage: { width: 120, height: 100, borderRadius: 8 },
+  similarCarInfo: { flex: 1, marginLeft: 12 },
   viewButton: {
-    backgroundColor: '#900',
-    paddingVertical: 4,
+    backgroundColor: '#006400',
+    paddingVertical: 6,
     paddingHorizontal: 12,
     borderRadius: 6,
     alignSelf: 'flex-start',
@@ -1280,7 +476,7 @@ const styles = StyleSheet.create({
   faqItem: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    paddingVertical: 8,
+    paddingVertical: 12,
     borderBottomWidth: 1,
     borderBottomColor: '#eee',
   },
@@ -1291,20 +487,30 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#fff',
     borderRadius: 12,
-    elevation: 2,
-    padding: 12,
+    elevation: 5,
+    padding: 16,
     marginVertical: 12,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 6,
   },
-  footerLeft: {
-    flexDirection: 'column',
+  footerLeft: { flexDirection: 'column' },
+  footerPrice: { fontWeight: 'bold', fontSize: 20, color: '#006400' },
+  priceBreakupLink: { fontSize: 14, color: '#900', textDecorationLine: 'underline', marginTop: 6 },
+  proceedButton: {
+    backgroundColor: '#006400',
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+    borderRadius: 8,
+    elevation: 3,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
   },
-  footerPrice: { fontWeight: 'bold', fontSize: 18, color: '#000' },
-  priceBreakupLink: {
-    fontSize: 14,
-    color: '#900',
-    textDecorationLine: 'underline',
-    marginTop: 4,
-  },
+  proceedButtonText: { color: '#fff', fontSize: 16, fontWeight: 'bold' },
+  carousel: { width: '100%', height: 150 },
 });
 
 export default CarDetails;

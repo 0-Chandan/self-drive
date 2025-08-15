@@ -1,4 +1,4 @@
-import React from 'react';
+import React ,{useEffect} from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import HomeScreen from '../screens/HomeScreen';
@@ -6,6 +6,8 @@ import MyTripsScreen from '../screens/MyTripsScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import NotificationScreen from '../screens/NotificationScreen';
 import type { RouteProp } from '@react-navigation/native';
+
+
 
 type TabParamList = {
   Home: undefined;
@@ -31,11 +33,14 @@ const getTabBarIcon = (route: RouteProp<TabParamList, keyof TabParamList>, color
 const Tab = createBottomTabNavigator<TabParamList>();
 
 const BottomTabNavigator: React.FC = () => {
+
+
+
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
         tabBarIcon: ({ color, size }) => getTabBarIcon(route, color, size),
-        tabBarActiveTintColor: '#811717',
+        tabBarActiveTintColor: '#006400',
         tabBarInactiveTintColor: 'gray',
         headerShown: false,
       })}

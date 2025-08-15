@@ -701,7 +701,7 @@ const styles = StyleSheet.create({
   headerText: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#811717',
+    color: '#006400',
     marginLeft: 10,
   },
   avatarContainer: {
@@ -730,7 +730,7 @@ const styles = StyleSheet.create({
   },
   input: {
     borderWidth: 1.5,
-    borderColor: '#F04F65',
+    borderColor: '#006400',
     borderRadius: 8,
     padding: 12,
     fontSize: 15,
@@ -741,7 +741,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
   },
   updateButton: {
-    backgroundColor: '#811717',
+    backgroundColor: '#006400',
     paddingVertical: 16,
     borderRadius: 16,
     alignItems: 'center',
@@ -761,3 +761,4 @@ const styles = StyleSheet.create({
 });
 
 export default EditProfile;
+  

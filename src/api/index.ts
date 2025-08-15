@@ -1,12 +1,10 @@
 
 
-
-
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export const api = axios.create({
-  baseURL: 'http://192.168.196.72:5000/api',
+  baseURL: 'https://cabcar-server.vercel.app/api',
   timeout: 15_000,
 });
 
@@ -21,3 +19,4 @@ export const setAuthHeader = async () => {
     api.defaults.headers.common.Authorization = `Bearer ${token}`;
   }
 };
+

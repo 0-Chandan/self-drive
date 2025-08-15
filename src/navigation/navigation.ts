@@ -86,7 +86,13 @@ export type RootStackParamList = {
   Documents: undefined;
   Settings: undefined;
   RatingsReview: undefined;
+  TermCondition: undefined;
+  PrivacyPolicy: undefined;
+  ReturnPolicy: undefined;
   MobileVerification: undefined;
+  splash: undefined;
+  ExperienceDriver: undefined;
+  BottomTabNavigator: undefined;
 };
 
 export type BottomTabParamList = NavigatorScreenParams<TabParamList>;

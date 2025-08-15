@@ -1,4 +1,4 @@
-package com.selfdrive
+package com.crzo.selfdrive
 
 import android.app.Application
 import com.facebook.react.PackageList

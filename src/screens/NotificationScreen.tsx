@@ -1,4 +1,4 @@
-import React from 'react';
+import React,{useEffect, useState} from 'react';
 import {
   View,
   Text,
@@ -12,7 +12,8 @@ import { useNavigation } from '@react-navigation/native';
 import { useAuth } from '../context/AuthContext'; // Adjust path
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../navigation/navigation';
-
+import axios from 'axios';
+import  AsyncStorage from '@react-native-async-storage/async-storage';
 
 type Notification = {
   id: number;
@@ -39,6 +40,21 @@ const notifications: Notification[] = [
 const NotificationScreen: React.FC = () => {
   const { isLoggedIn } = useAuth();
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+ const[token, setToken] = useState<string | null>(null);
+
+ const fetchToken = async () => {
+
+    await  AsyncStorage.getItem('authToken').then((value) => {
+        setToken(value);
+      }).catch((error) => {
+        console.error('Error fetching token:', error);
+      });
+   
+  };
+  useEffect(() => {
+      fetchToken();
+  },[token]);
+
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -47,7 +63,7 @@ const NotificationScreen: React.FC = () => {
       </View>
 
       <ScrollView contentContainerStyle={styles.scrollContent}>
-        {isLoggedIn ? (
+        {token ? (
           notifications.length > 0 ? (
             notifications.map((notification) => (
               <View key={notification.id} style={styles.notificationCard}>
@@ -74,6 +90,18 @@ const NotificationScreen: React.FC = () => {
           </View>
         )}
       </ScrollView>
+      {/* <ScrollView>
+        {notifications.map((notification) => (
+          <View key={notification.id} style={styles.notificationCard}>
+            <Ionicons name="notifications-outline" size={24} color="#811717" />
+            <View style={styles.notificationInfo}>
+              <Text style={styles.notificationTitle}>{notification.title}</Text>
+              <Text style={styles.notificationMessage}>{notification.message}</Text>
+              <Text style={styles.notificationDate}>{notification.date}</Text>
+            </View>
+          </View>
+        ))}
+      </ScrollView> */}
     </SafeAreaView>
   );
 };
@@ -96,7 +124,7 @@ const styles = StyleSheet.create({
   headerText: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#811717',
+    color: '#006400',
   },
   notificationCard: {
     flexDirection: 'row',
@@ -149,7 +177,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   loginButton: {
-    backgroundColor: '#811717',
+    backgroundColor: '#006400',
     paddingVertical: 12,
     paddingHorizontal: 24,
     borderRadius: 8,

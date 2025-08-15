@@ -371,11 +371,11 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#eee',
   },
-  headerText: { color: '#811717', fontSize: 16, fontWeight: '600', marginLeft: 10 },
+  headerText: { color: '#006400', fontSize: 16, fontWeight: '600', marginLeft: 10 },
   form: { padding: 20 },
   input: {
     borderWidth: 2,
-    borderColor: '#F04F65',
+    borderColor: '#006400',
     borderRadius: 8,
     padding: 10,
     marginBottom: 10,
@@ -390,7 +390,7 @@ const styles = StyleSheet.create({
   addPhotoText: { color: '#666', marginRight: 5 },
   preview: { width: 100, height: 100, marginVertical: 10, borderRadius: 8 },
   takeImageButton: {
-    backgroundColor: '#811717',
+    backgroundColor: '#006400',
     paddingVertical: 12,
     borderRadius: 8,
     alignItems: 'center',
@@ -399,7 +399,7 @@ const styles = StyleSheet.create({
     borderTopColor: '#eee',
   },
   takeImageButtonText: {
-    color: '#811717',
+    color: '#006400',
     fontWeight: 'bold',
     fontSize: 16,
   },
@@ -410,7 +410,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFF5F6',
   },
   updateButton: {
-    backgroundColor: '#811717',
+    backgroundColor: '#006400',
     paddingVertical: 15,
     borderRadius: 10,
     alignItems: 'center',

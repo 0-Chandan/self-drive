@@ -526,7 +526,9 @@ import { useAuth } from '../context/AuthContext';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import type { RouteProp } from '@react-navigation/native';
 import { RootStackParamList } from '../navigation/navigation';
-
+import axios from 'axios';
+import { baseURL } from '../constant/Base_Url';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 type NavigationProp = NativeStackNavigationProp<RootStackParamList, 'OTPVerification'>;
 type RouteProps = RouteProp<RootStackParamList, 'OTPVerification'>;
 
@@ -536,7 +538,7 @@ const OTPVerificationScreen: React.FC = () => {
   const { mobileNumber, countryCode, redirectTo } = route.params;
   const { loginWithOTP } = useAuth();
 
-  const [otp, setOtp] = useState<string[]>(['', '', '', '', '', '']);
+  const [otp, setOtp] = useState<string[]>(['', '', '', '']);
   const [timer, setTimer] = useState<number>(30);
   const [isVerifying, setIsVerifying] = useState(false);
   const inputs = useRef<(TextInput | null)[]>([]);
@@ -553,7 +555,7 @@ const OTPVerificationScreen: React.FC = () => {
       const newOtp = [...otp];
       newOtp[index] = text;
       setOtp(newOtp);
-      if (index < 5) inputs.current[index + 1]?.focus();
+      if (index < 3) inputs.current[index + 1]?.focus();
     } else if (text === '') {
       const newOtp = [...otp];
       newOtp[index] = '';
@@ -567,36 +569,36 @@ const OTPVerificationScreen: React.FC = () => {
     }
   };
 
-  const handleLogin = async () => {
+   const handleLogin = async () => {
     const enteredOtp = otp.join('');
-    if (enteredOtp.length < 6) return;
+    if (enteredOtp.length < 4) return;
 
     const fullNumber = `${countryCode}${mobileNumber}`;
+    console.log('Sending OTP request:',  mobileNumber);
     setIsVerifying(true);
-    try {
-      const isSuccess = await loginWithOTP(fullNumber, enteredOtp);
-      if (isSuccess) {
-        if (redirectTo) {
-          navigation.navigate(redirectTo.screen, redirectTo.params);
-        } else {
-          navigation.reset({
-            index: 0,
-            routes: [{ name: 'Main', params: { screen: 'Home' } }],
-          });
-        }
-      } else {
+    
+      await axios.post(`${baseURL}/auth/user/login`, { mobile: mobileNumber, otp: enteredOtp })
+      .then((response) => {
+        console.log('OTP Response:', response.data.data);
+        AsyncStorage.setItem('authToken', response.data.data.token);
+        console.log('Auth Token:', response.data.data.token);
+        Alert.alert('Success', 'Login successful!');
+         navigation.replace("Main", { screen: "Home" });
+        //loginWithOTP(response.data.token, response.data.user);
+      })
+      .catch((error) => {
+        console.error('OTP Request Failed:', error);
         Alert.alert('Error', 'Invalid OTP. Please try again.');
-      }
-    } catch {
-      Alert.alert('Error', 'Invalid OTP. Please try again.');
-    } finally {
-      setIsVerifying(false);
-    }
+      })
+      .finally(() => {
+        setIsVerifying(false);
+      });
+    
   };
 
   const handleResend = () => {
     setTimer(30);
-    setOtp(['', '', '', '', '', '']);
+    setOtp(['', '', '', '', '']);
     inputs.current[0]?.focus();
     // optional: trigger sendOtp again via AuthContext if you expose it
   };
@@ -606,13 +608,13 @@ const OTPVerificationScreen: React.FC = () => {
       <SafeAreaView style={styles.container}>
         <View style={styles.headerCard}>
           <TouchableOpacity onPress={() => navigation.goBack()}>
-            <Ionicons name="arrow-back" size={20} color="#C93A3A" />
+            <Ionicons name="arrow-back" size={20} color="#006400" />
           </TouchableOpacity>
           <Text style={styles.headerText}>Enter OTP</Text>
         </View>
 
         <View style={styles.content}>
-          <Text style={styles.title}>Enter 6-digit OTP</Text>
+          <Text style={styles.title}>Enter 4-digit OTP</Text>
           <Text style={styles.subtitle}>OTP was sent to {countryCode}{mobileNumber}</Text>
 
           <View style={styles.otpInputs}>
@@ -684,7 +686,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 4,
   },
-  headerText: { color: '#C93A3A', fontSize: 16, fontWeight: '600', marginLeft: 10 },
+  headerText: { color: '#006400', fontSize: 16, fontWeight: '600', marginLeft: 10 },
   content: { flex: 1, paddingHorizontal: 20, paddingTop: 70 },
   title: { fontSize: 22, fontWeight: 'bold', marginBottom: 6 },
   subtitle: { fontSize: 14, color: '#888', marginBottom: 20 },
@@ -693,27 +695,27 @@ const styles = StyleSheet.create({
     width: 48,
     height: 56,
     borderWidth: 2,
-    borderColor: '#C93A3A',
+    borderColor: '#006400',
     borderRadius: 8,
     textAlign: 'center',
     fontSize: 20,
     fontWeight: '600',
-    color: '#C93A3A',
+    color: '#006400',
   },
   timerContainer: { flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginBottom: 20 },
   timerText: { fontSize: 14, color: '#666' },
-  resendText: { fontSize: 14, color: '#C93A3A', fontWeight: 'bold', marginLeft: 10 },
+  resendText: { fontSize: 14, color: '#006400', fontWeight: 'bold', marginLeft: 10 },
   bottom: {
     position: 'absolute',
     bottom: 0,
-    width: '100%',
+    width: '100%',    
     backgroundColor: '#FFF5F6',
     padding: 20,
     borderTopWidth: 1,
     borderTopColor: '#eee',
   },
   loginButton: {
-    backgroundColor: '#C93A3A',
+    backgroundColor: '#006400',
     paddingVertical: 15,
     borderRadius: 10,
     alignItems: 'center',

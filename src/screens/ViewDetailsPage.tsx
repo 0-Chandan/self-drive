@@ -93,7 +93,7 @@
 // export default ViewDetailsPage;
 
 
-import React from 'react';
+import React, { use,useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image, ScrollView, ActivityIndicator, Alert } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useNavigation, useRoute } from '@react-navigation/native';
@@ -103,6 +103,8 @@ import { useAuth } from '../context/AuthContext';
 import { useQuery } from '@tanstack/react-query';
 import { getVehicleById } from '../api/vehicles';
 import { RootStackParamList } from '../../App';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
 
 type ViewDetailsNavigationProp = NativeStackNavigationProp<RootStackParamList, 'ViewDetails'>;
 type ViewDetailsRouteProp = RouteProp<RootStackParamList, 'ViewDetails'>;
@@ -110,20 +112,41 @@ type ViewDetailsRouteProp = RouteProp<RootStackParamList, 'ViewDetails'>;
 const ViewDetailsPage: React.FC = () => {
   const navigation = useNavigation<ViewDetailsNavigationProp>();
   const route = useRoute<ViewDetailsRouteProp>();
+  const[token, setToken] = useState<string>('');
   const { isLoggedIn } = useAuth();
   const { carId, startDate, endDate } = route.params;
+
 
   const { data: car, isLoading, error } = useQuery({
     queryKey: ['vehicle', carId],
     queryFn: () => getVehicleById(carId),
   });
 
+  const getToken = async () => {
+    try{
+      await AsyncStorage.getItem('authToken').then((value) => {
+        if (value !== null) {
+          console.log("Token fetched:", value);
+          setToken(value);
+        } 
+      });
+    }catch (error) {
+      console.error('Error fetching token:', error);
+    }
+  }
+  useEffect(() => {
+       console.log("carId", carId);
+    getToken();
+  }, [token]);
+
+ 
+
   const handleBookNow = () => {
     if (!startDate || !endDate) {
       Alert.alert('Error', 'Please select start and end dates.');
       return;
     }
-    if (!isLoggedIn) {
+    if (!token) {
       navigation.navigate('Login', {
         redirectTo: {
           screen: 'Payment',
@@ -184,7 +207,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 20,
   },
-  headerText: { fontSize: 20, fontWeight: 'bold', color: '#811717', marginLeft: 10 },
+  headerText: { fontSize: 20, fontWeight: 'bold', color: '#006400', marginLeft: 10 },
   carImage: {
     width: '100%',
     height: 200,
@@ -198,10 +221,10 @@ const styles = StyleSheet.create({
     padding: 15,
     marginBottom: 20,
   },
-  price: { fontSize: 18, fontWeight: 'bold', color: '#811717', marginBottom: 10 },
+  price: { fontSize: 18, fontWeight: 'bold', color: '#006400', marginBottom: 10 },
   detailsText: { fontSize: 14, color: '#666' },
   bookButton: {
-    backgroundColor: '#811717',
+    backgroundColor: '#006400',
     paddingVertical: 12,
     borderRadius: 8,
     alignItems: 'center',

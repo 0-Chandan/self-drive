@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 import  Ionicons  from 'react-native-vector-icons/Ionicons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
-
+import  Geolocation  from '@react-native-community/geolocation';
 type RootStackParamList = {
   Main: { screen: string; params?: { location: string } };
 };
@@ -29,6 +29,37 @@ const dummyLocations = [
 const LocationPickerScreen: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const navigation = useNavigation<LocationPickerNavigationProp>();
+  const[latitude,setLatitude]=useState<number>(0);
+  const[longitude,setLongitude]=useState<number>(0);
+  const[currentLocation,setCurrentLocation]=useState('');
+  
+     
+
+  const getCurrentLocation = () => {
+     Geolocation.getCurrentPosition(
+      (position)=>{
+        setLatitude(position.coords.latitude);
+        setLongitude(position.coords.longitude);
+      },
+      (error)=>{
+        console.log(error);
+      }
+     )
+     if(latitude && longitude){
+      fetch(`https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json`)
+      .then(response => response.json())
+      .then(data => {
+        setCurrentLocation(data.display_name);
+      })
+      .catch(error => {
+        console.log(error);
+      });
+     }
+  }
+  useEffect(()=>{
+    getCurrentLocation();
+  },[latitude,longitude])
+
 
   const handleSearchSubmit = () => {
     if (searchQuery.trim()) {
@@ -48,6 +79,7 @@ const LocationPickerScreen: React.FC = () => {
     });
   };
 
+
   return (
     <View style={styles.container}>
       <View style={styles.searchContainer}>
@@ -59,11 +91,13 @@ const LocationPickerScreen: React.FC = () => {
           onSubmitEditing={handleSearchSubmit}
           returnKeyType="done"
         />
-        <Ionicons name="search" size={24} color="#900" style={styles.searchIcon} />
+        <Ionicons name="search" size={24} color="#006400" style={styles.searchIcon} />
       </View>
 
-      <TouchableOpacity style={styles.currentLocationBtn}>
-        <MaterialIcons name="my-location" size={20} color="#900" />
+      <TouchableOpacity 
+      onPress={handleLocationSelect.bind(this,currentLocation)}
+      style={styles.currentLocationBtn}>
+        <MaterialIcons name="my-location" size={20} color="#006400" />
         <Text style={styles.currentLocationText}>CURRENT LOCATION</Text>
       </TouchableOpacity>
 
@@ -76,7 +110,7 @@ const LocationPickerScreen: React.FC = () => {
             style={styles.locationCard}
             onPress={() => handleLocationSelect(loc.name)}
           >
-            <Ionicons name="location-outline" size={24} color="#900" />
+            <Ionicons name="location-outline" size={24} color="#006400" />
             <View style={styles.locationDetails}>
               <Text style={styles.locationName}>{loc.name}</Text>
               <Text style={styles.locationAddress}>{loc.address}</Text>
@@ -94,7 +128,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: '#900',
+    borderColor: '#006400',
     borderRadius: 8,
     paddingHorizontal: 10,
     marginBottom: 10,
@@ -111,12 +145,12 @@ const styles = StyleSheet.create({
   },
   currentLocationText: {
     marginLeft: 10,
-    color: '#900',
+    color: '#006400',
     fontWeight: 'bold',
   },
   suggestedTitle: {
     fontSize: 12,
-    color: '#900',
+    color: '#006400',
     fontWeight: 'bold',
     borderBottomWidth: 1,
     borderColor: '#ccc',
@@ -132,7 +166,7 @@ const styles = StyleSheet.create({
     borderColor: '#eee',
   },
   locationDetails: { marginLeft: 10, flex: 1 },
-  locationName: { fontWeight: 'bold', color: '#900' },
+  locationName: { fontWeight: 'bold', color: '#006400' },
   locationAddress: { fontSize: 12, color: '#444' },
 });
 

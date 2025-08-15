@@ -813,7 +813,7 @@ const styles = StyleSheet.create({
   viewButtonText: { color: '#fff', fontSize: 14 },
   errorText: { color: '#900', fontSize: 16, textAlign: 'center', marginTop: 20 },
   loginButton: {
-    backgroundColor: '#900',
+    backgroundColor: '#006400',
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderRadius: 8,

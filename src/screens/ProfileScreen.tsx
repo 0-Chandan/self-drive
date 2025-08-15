@@ -228,7 +228,7 @@
 
 
 
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   Text,
@@ -243,16 +243,31 @@ import { useNavigation } from '@react-navigation/native';
 import { useAuth } from '../context/AuthContext';
 import { RootStackParamList } from '../navigation/navigation'; // Adjust path as necessary
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import AsyncStorage from '@react-native-async-storage/async-storage';
   
 const ProfileScreen = () => {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
  
   const { isLoggedIn, userData, logout } = useAuth();
   const insets = useSafeAreaInsets();
+  const[token, setToken] = React.useState<string | null>(null);
 
+  const fetchToken = async () => {
+    await AsyncStorage.getItem('authToken').then((value) => {
+      setToken(value);
+    }
+    ).catch((error) => {
+      console.error('Error fetching token:', error);
+    });
+  }
+
+  useEffect(() => {
+    fetchToken();
+  })
   const commonItems = [
     { icon: 'settings-outline', label: 'Settings', screen: 'Settings' },
     { icon: 'star-outline', label: 'Ratings & Reviews', screen: 'RatingsReview' },
+   
   ];
 
  
@@ -264,6 +279,9 @@ const ProfileScreen = () => {
 
   const handleLogout = () => {
     logout();
+    AsyncStorage.removeItem('authToken'); // Clear token on logout
+    setToken(null); // Update local state
+    // Redirect to login screen 
     navigation.navigate({ name: 'Login', params: {} });
   };
 
@@ -276,7 +294,7 @@ const ProfileScreen = () => {
           <Image
             source={
               isLoggedIn && userData.photoUrl
-                ? { uri: `http://10.0.2.2:5000${userData.photoUrl}` } // Adjust for physical device if needed
+                ? { uri: `https://car-rent-server-three.vercel.app/${userData.photoUrl}` } // Adjust for physical device if needed
                 : require('../../assets/car1.png')
             }
             style={styles.avatar}
@@ -286,16 +304,17 @@ const ProfileScreen = () => {
             {isLoggedIn ? userData.phone : 'Please log in to view details'}
           </Text>
 
-          {isLoggedIn && (
+          {token && (
             <View style={styles.loyaltyContainer}>
-              <Ionicons name="gift-outline" size={20} color="#811717" />
+              <Ionicons name="gift-outline" size={20} color="#006400" />
               <Text style={styles.loyaltyText}>
                 Loyalty Rewards: {userData.loyaltyPoints} Points
               </Text>
             </View>
           )}
+       {/* Remove comment after play store(chandan) */}
 
-          {!isLoggedIn && (
+          {!token && (
             <TouchableOpacity
               style={styles.loginButton}
               onPress={() => navigation.navigate({ name: 'Login', params: {} })}
@@ -306,35 +325,45 @@ const ProfileScreen = () => {
         </View>
 
         <View style={styles.menuContainer}>
-          {isLoggedIn &&
-            authOnlyItems.map((item, index) => (
+          {token &&
+            authOnlyItems.map((item:any, index) => (
               <TouchableOpacity
                 key={index}
                 style={styles.menuItem}
-                onPress={() => navigation.navigate('EditProfile')} // Adjust screen name as necessary  
+                onPress={() => navigation.navigate(item.screen)} // Adjust screen name as necessary  
               >
-                <Ionicons name={item.icon} size={22} color="#811717" />
+                <Ionicons name={item.icon} size={22} color="#006400" />
                 <Text style={styles.menuText}>{item.label}</Text>
                 <Ionicons name="chevron-forward-outline" size={18} color="#ccc" />
               </TouchableOpacity>
             ))}
 
-          {commonItems.map((item, index) => (
+        
             <TouchableOpacity
-              key={index}
+         
               style={styles.menuItem}
-              onPress={() => navigation.navigate('Documents')}
+              onPress={() => navigation.navigate('Settings')}
             >
-              <Ionicons name={item.icon} size={22} color="#811717" />
-              <Text style={styles.menuText}>{item.label}</Text>
+              <Ionicons name={"settings-outline"} size={22} color="#86a686" />
+              <Text style={styles.menuText}>Settings</Text>
               <Ionicons name="chevron-forward-outline" size={18} color="#ccc" />
             </TouchableOpacity>
-          ))}
+
+            <TouchableOpacity
+         
+              style={styles.menuItem}
+              onPress={() => navigation.navigate('RatingsReview')}
+            >
+              <Ionicons name={"settings-outline"} size={22} color="#86a686" />
+              <Text style={styles.menuText}>Rating & Reviews</Text>
+              <Ionicons name="chevron-forward-outline" size={18} color="#ccc" />
+            </TouchableOpacity>
+      
         </View>
 
-        {isLoggedIn && (
+        {token && (
           <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
-            <Ionicons name="log-out-outline" size={20} color="#811717" />
+            <Ionicons name="log-out-outline" size={20} color="#86a686" />
             <Text style={styles.logoutText}>LOG OUT</Text>
           </TouchableOpacity>
         )}
@@ -356,7 +385,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 22,
     fontWeight: 'bold',
-    color: '#811717',
+    color: '#006400',
     alignSelf: 'center',
     marginVertical: 10,
   },
@@ -402,7 +431,7 @@ const styles = StyleSheet.create({
   },
   loginButton: {
     marginTop: 12,
-    backgroundColor: '#811717',
+    backgroundColor: '#006400',
     paddingHorizontal: 20,
     paddingVertical: 10,
     borderRadius: 8,

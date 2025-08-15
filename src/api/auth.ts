@@ -14,12 +14,16 @@ export const requestOtp = (mobile: string) => {
 export interface LoginResponse {
   token: string;
   user: { id: number; mobile: string; role: 'user' };
+  success: boolean;
 }
 
 export const verifyOtp = (mobile: string, otp: string) =>
   api
     .post<LoginResponse>('/auth/user/login', { mobile, otp })
-    .then(res => res.data);
+    .then((res)=>{
+      console.log('Login Response:', res.data);
+      return res.data.success;
+    });
 
 
 

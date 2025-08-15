@@ -10,7 +10,8 @@ type RootStackParamList = {
   Notifications: undefined;
   Language: undefined;
   PrivacyPolicy: undefined;
-  TermsConditions: undefined;
+  TermCondition: undefined;
+  ReturnPolicy:undefined
 };
 
 // Type for navigation prop
@@ -24,7 +25,8 @@ const SettingsScreen: React.FC = () => {
     { name: 'Notifications', icon: 'notifications-outline', screen: 'Notifications' },
     { name: 'Language', icon: 'language-outline', screen: 'Language' },
     { name: 'Privacy Policy', icon: 'lock-closed-outline', screen: 'PrivacyPolicy' },
-    { name: 'Terms & Conditions', icon: 'document-text-outline', screen: 'TermsConditions' },
+    { name: 'Terms & Conditions', icon: 'document-text-outline', screen: 'TermCondition' },
+    {name:"Return Policy",icon:"document-text-outline",screen:"ReturnPolicy"}
   ] as const;  // Using 'as const' ensures that TypeScript knows these values are literal types
 
   return (
@@ -40,7 +42,7 @@ const SettingsScreen: React.FC = () => {
             style={styles.option}
             onPress={() => navigation.navigate(option.screen)} // No type error now
           >
-            <Ionicons name={option.icon} size={24} color="#811717" />
+            <Ionicons name={option.icon} size={24} color="#006400" />
             <Text style={styles.optionText}>{option.name}</Text>
           </TouchableOpacity>
         ))}
@@ -57,7 +59,7 @@ const styles = StyleSheet.create({
     borderBottomColor: '#eee',
     alignItems: 'center',
   },
-  headerText: { fontSize: 18, fontWeight: 'bold', color: '#811717' },
+  headerText: { fontSize: 18, fontWeight: 'bold', color: '#006400' },
   options: { padding: 16 },
   option: {
     flexDirection: 'row',

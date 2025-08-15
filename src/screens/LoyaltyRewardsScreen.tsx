@@ -60,7 +60,7 @@ const LoyaltyRewardsScreen = () => {
       <ScrollView style={styles.container}>
         {/* Points Balance */}
         <View style={styles.pointsCard}>
-          <Ionicons name="gift-outline" size={30} color="#811717" />
+          <Ionicons name="gift-outline" size={30} color="#006400" />
           <Text style={styles.pointsText}>Your Points: {userPoints}</Text>
         </View>
 
@@ -68,7 +68,7 @@ const LoyaltyRewardsScreen = () => {
         <View style={styles.sectionCard}>
           <Text style={styles.sectionTitle}>How to Earn Points</Text>
           <View style={styles.infoRow}>
-            <Ionicons name="car-outline" size={20} color="#811717" />
+            <Ionicons name="car-outline" size={20} color="#006400" />
             <Text style={styles.infoText}>Earn 100 points for every car booking.</Text>
           </View>
         </View>
@@ -78,7 +78,7 @@ const LoyaltyRewardsScreen = () => {
           <Text style={styles.sectionTitle}>Available Rewards</Text>
           {rewards.map((reward) => (
             <View key={reward.id} style={styles.rewardItem}>
-              <Ionicons name="gift-outline" size={24} color="#811717" />
+              <Ionicons name="gift-outline" size={24} color="#006400" />
               <View style={styles.rewardDetails}>
                 <Text style={styles.rewardName}>{reward.name}</Text>
                 <Text style={styles.rewardPoints}>{reward.points} Points</Text>
@@ -120,7 +120,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 22,
     fontWeight: 'bold',
-    color: '#811717',
+    color: '#006400',
     flex: 1, // Take remaining space, push title to center/right
     textAlign: 'center', // Center the title text
   },
@@ -156,7 +156,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#811717',
+    color: '#006400',
     marginBottom: 12,
   },
   infoRow: {
@@ -190,13 +190,13 @@ const styles = StyleSheet.create({
     color: '#777',
   },
   redeemButton: {
-    backgroundColor: '#811717',
+    backgroundColor: '#006400',
     paddingHorizontal: 16,
     paddingVertical: 8,
     borderRadius: 8,
   },
   redeemButtonDisabled: {
-    backgroundColor: '#811717',
+    backgroundColor: '#006400',
     paddingHorizontal: 16,
     paddingVertical: 8,
     borderRadius: 8,
