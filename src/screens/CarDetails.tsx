@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, Image, StyleSheet, ScrollView, TouchableOpacity, ActivityIndicator, Dimensions, FlatList } from 'react-native';
+import React, { use, useEffect, useState } from 'react';
+import { View, Text, Image, StyleSheet, ScrollView, TouchableOpacity, ActivityIndicator, Dimensions, FlatList,Alert } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useRoute, useNavigation } from '@react-navigation/native';
 import { useAuth } from '../context/AuthContext';
@@ -10,6 +10,7 @@ import { RootStackParamList } from '../navigation/navigation';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { baseURL } from '../constant/Base_Url';
+
 
 type CarDetailsNavigationProp = NativeStackNavigationProp<RootStackParamList, 'CarDetails'>;
 type CarDetailsRouteProp = RouteProp<RootStackParamList, 'CarDetails'>;
@@ -43,7 +44,7 @@ interface CarData {
 interface SimilarCar {
   id: number;
   name: string;
-  pricePerKm: number;
+  pricePerday: number;
   transmission: string;
   fuel: string;
   seats: number;
@@ -64,10 +65,19 @@ const CarDetails: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [similarCars, setSimilarCars] = useState<SimilarCar[]>([]);
   const[issimilar, setIsSimilar] = useState(false);
+  const [userId, setUserId] = useState<number | null>(null);
   const getToken = async () => {
     const value = await AsyncStorage.getItem('authToken');
     setToken(value);
   };
+
+  const getuserid = async () => {
+    const value = await AsyncStorage.getItem('user');
+    const user = value ? JSON.parse(value) : null;
+    if (value !== null) {
+      setUserId(parseInt(user.id)); 
+  };
+  }
 
   const fetchCarDetails = () => {
     setIsLoading(true);
@@ -133,7 +143,7 @@ const CarDetails: React.FC = () => {
       setSimilarCars(response.data.data.cars.map((car: any) => ({
         id: car.id,
         name: car.name,
-        pricePerKm: car.pricePerKm,
+        pricePerday: car.pricePerDay,
         transmission: car.transmission,
         fuel: car.fuel,
         seats: car.seats,
@@ -148,6 +158,7 @@ const CarDetails: React.FC = () => {
     getToken();
       fetchCarDetails();
       getSimilarCars();
+      getuserid();
    
   }, [isLoggedIn, token,issimilar]);
 
@@ -165,14 +176,32 @@ const CarDetails: React.FC = () => {
 
   const handleButtonPress = () => {
    
-      navigation.navigate('Login', {
-        redirectTo: { screen: 'CarDetails', params: { carId, startDate, endDate, isWithDriver } },
-      });
+      // navigation.navigate('Login', {
+      //   redirectTo: { screen: 'CarDetails', params: { carId, startDate, endDate, isWithDriver } },
+      // });
+       if(!userId){
+          Alert.alert(
+            'Login Required',
+            'You need to log in to book a driver.',
+            [
+              {
+                text: 'Cancel',
+                style: 'cancel',
+              },
+              {
+                text: 'Log In',
+                onPress: () => navigation.navigate('Login', { redirectTo: { screen: 'CarDetails', params: { carId, startDate, endDate, isWithDriver } } }),
+              },
+            ],
+            { cancelable: false }
+          );
+          return;
+        }
    if (carDetails) {
       navigation.navigate('Payment', {
         carId: carDetails.id,
         carName: carDetails.name,
-        price: `₹${carDetails.pricePerKm}/10km`,
+        price: Number(carDetails.pricePerDay),
         startDate: startDate || new Date().toISOString(),
         endDate: endDate || new Date().toISOString(),
         isWithDriver,
@@ -249,7 +278,7 @@ const CarDetails: React.FC = () => {
             <Text style={styles.locationText}>Location: {carDetails.location}</Text>
             <Text style={styles.carPrice}>Vehicle NO: {carDetails.number}</Text>
             <View style={styles.dateBox}>
-              <Text style={styles.dateBoxText}>₹{carDetails.pricePerKm}/10km</Text>
+              <Text style={styles.dateBoxText}>₹{carDetails.pricePerDay}/day</Text>
               <Text style={styles.dateBoxText}>
                 {`${formatDate(startDate)} - ${formatDate(endDate)} | ${formatTime(startDate)} - ${formatTime(endDate)}`}
               </Text>
@@ -309,7 +338,7 @@ const CarDetails: React.FC = () => {
                 />
                 <View style={styles.similarCarInfo}>
                   <Text style={styles.carName}>{item.name}</Text>
-                  <Text style={styles.carPrice}>₹{item.pricePerKm}/10km</Text>
+                  <Text style={styles.carPrice}>₹{item.pricePerday}/day</Text>
                   <Text style={styles.carDetails}>
                     {`${item.transmission} | ${item.fuel} | ${item.seats} Seats`}
                   </Text>
@@ -340,9 +369,16 @@ const CarDetails: React.FC = () => {
             <Text style={styles.priceBreakupLink}>View Price Breakup</Text>
           </TouchableOpacity>
         </View>
+        {
+          carDetails.available ?
         <TouchableOpacity style={styles.proceedButton} onPress={handleButtonPress}>
           <Text style={styles.proceedButtonText}>Proceed to Pay</Text>
         </TouchableOpacity>
+        :
+        <TouchableOpacity style={styles.notavailablebutton}>
+          <Text style={styles.proceedButtonText}>Not Available</Text>
+        </TouchableOpacity>
+      }
       </View>
       {isPriceBreakupOpen && carDetails && (
         <PriceBreakup
@@ -510,6 +546,17 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
   },
   proceedButtonText: { color: '#fff', fontSize: 16, fontWeight: 'bold' },
+  notavailablebutton: {
+     backgroundColor: '#640f00ff',
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+    borderRadius: 8,
+    elevation: 3,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+  },
   carousel: { width: '100%', height: 150 },
 });
 

@@ -31,6 +31,8 @@ import  DriverDetails from './src/screens/experiencesdriver/DriverDetails';
 import { startBackgroundLocation ,getIsRunning,type Location} from './src/backgroundlocation/BackgroundLocation';
 import { Platform,PermissionsAndroid,Linking,Alert} from 'react-native';
 import Geolocation from '@react-native-community/geolocation';
+import BookedCar from './src/screens/bookedcar/BookedCar';
+import BookedDriver from './src/screens/experiencesdriver/BookedDriver';
 
 
 export type RootStackParamList = {
@@ -58,6 +60,9 @@ export type RootStackParamList = {
   ViewDetails: { carId: number; startDate?: string; endDate?: string };
 ExperienceDriver: undefined;
 DriverDetails: undefined;
+BookedCar: undefined;
+BookedDriver: undefined;
+
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -260,6 +265,8 @@ const requestPostNotificationsIfNeeded = async () => {
               <Stack.Screen name='ReturnPolicy' component={ReturnPolicy}/>
               <Stack.Screen name='ExperienceDriver' component={ExperienceDriver}/>
               <Stack.Screen name='DriverDetails' component={DriverDetails}/>
+              <Stack.Screen name='BookedCar' component={BookedCar} />
+              <Stack.Screen name='BookedDriver' component={BookedDriver} />
             </Stack.Navigator>
           </NavigationContainer>
         </AuthProvider>

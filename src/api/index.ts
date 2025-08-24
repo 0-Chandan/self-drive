@@ -2,10 +2,12 @@
 
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { baseURL } from '../constant/Base_Url';
 
 export const api = axios.create({
-  baseURL: 'https://cabcar-server.vercel.app/api',
-  timeout: 15_000,
+  //baseURL: 'https://cabcar-server.vercel.app/api',
+  baseURL,
+  timeout: 15_000, 
 });
 
 export const clearAuthHeader = () => {

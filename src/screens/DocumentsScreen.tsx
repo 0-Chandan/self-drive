@@ -1,167 +1,4 @@
-// import React, { useState } from 'react';
-// import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Image, Alert } from 'react-native';
-// import Ionicons from 'react-native-vector-icons/Ionicons';
-// import { useNavigation } from '@react-navigation/native';
-// import { launchImageLibrary, launchCamera, ImagePickerResponse, ImageLibraryOptions, CameraOptions } from 'react-native-image-picker';
-// import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
-
-// type RootStackParamList = {
-//   Documents: undefined;
-// };
-
-// type DocumentsNavigationProp = NativeStackNavigationProp<RootStackParamList, 'Documents'>;
-
-// const DocumentsScreen: React.FC = () => {
-//   const navigation = useNavigation<DocumentsNavigationProp>();
-//   const [aadharNumber, setAadharNumber] = useState('');
-//   const [driversLicenseNumber, setDriversLicenseNumber] = useState('');
-//   const [aadharPhoto, setAadharPhoto] = useState<string | null>(null);
-//   const [licensePhoto, setLicensePhoto] = useState<string | null>(null);
-//   const [livePhoto, setLivePhoto] = useState<string | null>(null);
-
-//   const handleUpdateDocuments = () => {
-//     if (!aadharNumber || !driversLicenseNumber || !aadharPhoto || !licensePhoto || !livePhoto) {
-//       Alert.alert('Error', 'Please fill all fields and add all photos');
-//       return;
-//     }
-//     Alert.alert('Success', 'Documents updated successfully!');
-//     navigation.goBack();
-//   };
-
-//   const pickImageFromGallery = async (setPhoto: React.Dispatch<React.SetStateAction<string | null>>) => {
-//     const options: ImageLibraryOptions = {
-//       mediaType: 'photo',
-//       quality: 0.5,
-//     };
-//     const result: ImagePickerResponse = await launchImageLibrary(options);
-
-//     if (!result.didCancel && result.assets && result.assets.length > 0) {
-//       setPhoto(result.assets[0].uri || null);
-//     }
-//   };
-
-//   const takeLivePhoto = async () => {
-//     const options: CameraOptions = {
-//       mediaType: 'photo',
-//       quality: 0.5,
-//     };
-//     const result: ImagePickerResponse = await launchCamera(options);
-
-//     if (!result.didCancel && result.assets && result.assets.length > 0) {
-//       setLivePhoto(result.assets[0].uri || null);
-//     }
-//   };
-
-//   return (
-//     <ScrollView style={styles.container}>
-//       <View style={styles.header}>
-//         <TouchableOpacity onPress={() => navigation.goBack()}>
-//           <Ionicons name="arrow-back" size={20} color="#811717" />
-//         </TouchableOpacity>
-//         <Text style={styles.headerText}>Documents</Text>
-//       </View>
-
-//       <View style={styles.form}>
-//         <TextInput
-//           style={styles.input}
-//           placeholder="Aadhar Number"
-//           value={aadharNumber}
-//           onChangeText={setAadharNumber}
-//         />
-//         <TouchableOpacity style={styles.addPhoto} onPress={() => pickImageFromGallery(setAadharPhoto)}>
-//           <Text style={styles.addPhotoText}>Add Aadhar Photo</Text>
-//           <Ionicons name="attach" size={16} color="#666" />
-//         </TouchableOpacity>
-//         {aadharPhoto && <Image source={{ uri: aadharPhoto }} style={styles.preview} />}
-
-//         <TextInput
-//           style={styles.input}
-//           placeholder="Driver's License Number"
-//           value={driversLicenseNumber}
-//           onChangeText={setDriversLicenseNumber}
-//         />
-//         <TouchableOpacity style={styles.addPhoto} onPress={() => pickImageFromGallery(setLicensePhoto)}>
-//           <Text style={styles.addPhotoText}>Add License Photo</Text>
-//           <Ionicons name="attach" size={16} color="#666" />
-//         </TouchableOpacity>
-//         {licensePhoto && <Image source={{ uri: licensePhoto }} style={styles.preview} />}
-
-//         <TouchableOpacity style={styles.takeImageButton} onPress={takeLivePhoto}>
-//           <Text style={styles.takeImageButtonText}>Take Live Photo</Text>
-//         </TouchableOpacity>
-//         {livePhoto && <Image source={{ uri: livePhoto }} style={styles.preview} />}
-//       </View>
-
-//       <View style={styles.bottomButton}>
-//         <TouchableOpacity style={styles.updateButton} onPress={handleUpdateDocuments}>
-//           <Text style={styles.updateButtonText}>UPDATE DOCUMENTS</Text>
-//         </TouchableOpacity>
-//       </View>
-//     </ScrollView>
-//   );
-// };
-
-// const styles = StyleSheet.create({
-//   container: { flex: 1, backgroundColor: '#fff' },
-//   header: {
-//     flexDirection: 'row',
-//     alignItems: 'center',
-//     padding: 16,
-//     backgroundColor: '#fff',
-//     borderBottomWidth: 1,
-//     borderBottomColor: '#eee',
-//   },
-//   headerText: { color: '#811717', fontSize: 16, fontWeight: '600', marginLeft: 10 },
-//   form: { padding: 20 },
-//   input: {
-//     borderWidth: 2,
-//     borderColor: '#F04F65',
-//     borderRadius: 8,
-//     padding: 10,
-//     marginBottom: 10,
-//     fontSize: 16,
-//   },
-//   addPhoto: {
-//     flexDirection: 'row',
-//     justifyContent: 'flex-end',
-//     alignItems: 'center',
-//     marginBottom: 10,
-//   },
-//   addPhotoText: { color: '#666', marginRight: 5 },
-//   preview: { width: 100, height: 100, marginVertical: 10, borderRadius: 8 },
-//   takeImageButton: {
-//     backgroundColor: '#811717',
-//     paddingVertical: 12,
-//     borderRadius: 8,
-//     alignItems: 'center',
-//     marginTop: 10,
-//   },
-//   takeImageButtonText: { color: '#fff', fontWeight: 'bold' },
-//   bottomButton: {
-//     padding: 20,
-//     borderTopWidth: 1,
-//     borderTopColor: '#eee',
-//     backgroundColor: '#FFF5F6',
-//   },
-//   updateButton: {
-//     backgroundColor: '#811717',
-//     paddingVertical: 15,
-//     borderRadius: 10,
-//     alignItems: 'center',
-//   },
-//   updateButtonText: {
-//     color: '#fff',
-//     fontSize: 16,
-//     fontWeight: '700',
-//     textTransform: 'uppercase',
-//   },
-// });
-
-// export default DocumentsScreen;
-
-
-
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -169,129 +6,129 @@ import {
   TouchableOpacity,
   StyleSheet,
   ScrollView,
-  Image,
   Alert,
-  AppState,
+  ActivityIndicator,
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useNavigation } from '@react-navigation/native';
-import {
-  launchImageLibrary,
-  launchCamera,
-  ImagePickerResponse,
-  ImageLibraryOptions,
-  CameraOptions,
-} from 'react-native-image-picker';
-import { uploadDocument } from '../api/user';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { baseURL } from '../constant/Base_Url';
+import { uploadDocument } from '../api/user';
 
-type RootStackParamList = {
-  Documents: undefined;
-};
-
+type RootStackParamList = { Documents: undefined };
 type DocumentsNavigationProp = NativeStackNavigationProp<RootStackParamList, 'Documents'>;
+
+type userdata = { id: string; mobile: string; role: string };
 
 const DocumentsScreen: React.FC = () => {
   const navigation = useNavigation<DocumentsNavigationProp>();
-  const [aadharNumber, setAadharNumber] = useState('');
+  const [aadhaarNumber, setAadharNumber] = useState('');
   const [driversLicenseNumber, setDriversLicenseNumber] = useState('');
-  const [aadharPhoto, setAadharPhoto] = useState<string | null>(null);
-  const [licensePhoto, setLicensePhoto] = useState<string | null>(null);
-  const [livePhoto, setLivePhoto] = useState<string | null>(null);
   const [isUploading, setIsUploading] = useState(false);
+  const [token, setToken] = useState('');
+  const [user, setUser] = useState<userdata | null>(null);
 
-  const validateInputs = () => {
-    if (!aadharNumber || !/^\d{12}$/.test(aadharNumber)) {
-      Alert.alert('Error', 'Valid 12-digit Aadhar number is required');
-      return false;
-    }
-    if (!driversLicenseNumber || !/^[A-Z0-9]{8,16}$/.test(driversLicenseNumber)) {
-      Alert.alert('Error', 'Valid driver’s license number is required');
-      return false;
-    }
-    if (!aadharPhoto || !licensePhoto || !livePhoto) {
-      Alert.alert('Error', 'Please upload all required photos');
-      return false;
-    }
-    return true;
-  };
+  // Error state for inputs
+  const [aadharError, setAadharError] = useState('');
+  const [licenseError, setLicenseError] = useState('');
 
-  const pickImageFromGallery = async (
-    setPhoto: React.Dispatch<React.SetStateAction<string | null>>,
-  ) => {
-    const options: ImageLibraryOptions = {
-      mediaType: 'photo',
-      quality: 0.5,
-    };
-    const result: ImagePickerResponse = await launchImageLibrary(options);
+  // Loader + verified state
+  const [aadhaarLoading, setAadhaarLoading] = useState(false);
+  const [aadhaarVerified, setAadhaarVerified] = useState(false);
 
-    if (!result.didCancel && result.assets && result.assets.length > 0) {
-      setPhoto(result.assets[0].uri || null);
-    }
-  };
+  const [licenseLoading, setLicenseLoading] = useState(false);
+  const [licenseVerified, setLicenseVerified] = useState(false);
 
-  const takeLivePhoto = async () => {
-    const options: CameraOptions = {
-      mediaType: 'photo',
-      quality: 0.5,
-    };
-    const result: ImagePickerResponse = await launchCamera(options);
+  useEffect(() => {
+    AsyncStorage.getItem('authToken').then((t) => t && setToken(t));
+    AsyncStorage.getItem('user').then((u) => u && setUser(JSON.parse(u)));
+  }, []);
 
-    if (!result.didCancel && result.assets && result.assets.length > 0) {
-      setLivePhoto(result.assets[0].uri || null);
-    }
-  };
-
-  const handleUpdateDocuments = async () => {
-    if (!validateInputs()){
+  // ---- Aadhaar Verification ----
+  const verifyaadharnumber = () => {
+    if (!aadhaarNumber.trim()) {
+      setAadharError('Aadhar number is required');
       return;
     }
+    if (!/^\d{12}$/.test(aadhaarNumber)) {
+      setAadharError('Aadhar must be 12 digits');
+      return;
+    }
+    setAadharError('');
+    setAadhaarLoading(true);
 
+    const payload = { userId: user?.id.toString(), aadhaarNumber };
+    axios
+      .post(`${baseURL}/users/documents`, payload, {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((res) => {
+        console.log(res.data);
+        Alert.alert('Success', 'Aadhar number verified successfully!');
+        setAadharNumber('');
+        setAadhaarVerified(true);
+      })
+      .catch((err) => {
+        Alert.alert('Error', err.response?.data?.message || 'Failed to verify Aadhar');
+        console.error(err.response?.data);
+      })
+      .finally(() => setAadhaarLoading(false));
+  };
+
+  // ---- License Verification ----
+  const verifydriverslicensenumber = () => {
+    if (!driversLicenseNumber.trim()) {
+      setLicenseError('License number is required');
+      return;
+    }
+    if (!/^[A-Z0-9]{8,16}$/.test(driversLicenseNumber)) {
+      setLicenseError('License number must be 8–16 alphanumeric chars');
+      return;
+    }
+    setLicenseError('');
+    setLicenseLoading(true);
+
+    const payload = { userId: user?.id.toString(), drivingLicenseNumber: driversLicenseNumber };
+    axios
+      .post(`${baseURL}/users/documents`, payload, {
+        withCredentials: true,
+        headers: { 'Content-Type': 'application/json', 
+          Authorization: `Bearer ${token}` },
+      })
+      .then(() => {
+        Alert.alert('Success', 'Driver’s license verified successfully!');
+        setDriversLicenseNumber('');
+        setLicenseVerified(true);
+      })
+      .catch((err) => {
+        console.error(err.response?.data);
+        Alert.alert('Error', 'Failed to verify license');
+      })
+      .finally(() => setLicenseLoading(false));
+  };
+
+  // ---- Document Upload ----
+  const handleUpdateDocuments = async () => {
+    if (!aadhaarVerified || !licenseVerified) {
+      Alert.alert('Error', 'Please verify both Aadhaar & License before uploading');
+      return;
+    }
     setIsUploading(true);
     try {
       const formData = new FormData();
-      formData.append('aadharNumber', aadharNumber);
+      formData.append('aadharNumber', aadhaarNumber);
       formData.append('driversLicenseNumber', driversLicenseNumber);
-      if (aadharPhoto) {
-        formData.append('aadharPhoto', {
-          uri: aadharPhoto,
-          name: `aadhar_${Date.now()}.jpg`,
-          type: 'image/jpeg',
-        } as any);
-      }
-      if (licensePhoto) {
-        formData.append('licensePhoto', {
-          uri: licensePhoto,
-          name: `license_${Date.now()}.jpg`,
-          type: 'image/jpeg',
-        } as any);
-      }
-      if (livePhoto) {
-        formData.append('livePhoto', {
-          uri: livePhoto,
-          name: `live_${Date.now()}.jpg`,
-          type: 'image/jpeg',
-        } as any);
-      }
 
       await uploadDocument(formData);
-
-      if (AppState.currentState === 'active') {
-        Alert.alert('Success', 'Documents uploaded successfully!');
-      }
+      Alert.alert('Success', 'Documents uploaded successfully!');
       navigation.goBack();
     } catch (error: any) {
-      console.error('Upload Documents Error:', {
-        message: error.message,
-        status: error.response?.status,
-        data: error.response?.data,
-      });
-      if (AppState.currentState === 'active') {
-        Alert.alert(
-          'Error',
-          error.response?.data?.message || 'Failed to upload documents. Please try again.'
-        );
-      }
+      Alert.alert('Error', error.response?.data?.message || 'Upload failed');
     } finally {
       setIsUploading(false);
     }
@@ -299,6 +136,7 @@ const DocumentsScreen: React.FC = () => {
 
   return (
     <ScrollView style={styles.container}>
+      {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <Ionicons name="arrow-back" size={20} color="#811717" />
@@ -307,45 +145,65 @@ const DocumentsScreen: React.FC = () => {
       </View>
 
       <View style={styles.form}>
+        {/* Aadhaar Input */}
         <TextInput
-          style={styles.input}
+          style={[styles.input, aadharError ? styles.errorInput : null]}
           placeholder="Aadhar Number"
-          value={aadharNumber}
-          onChangeText={setAadharNumber}
+          value={aadhaarNumber}
+          onChangeText={(text) => {
+            setAadharNumber(text);
+            if (text.trim()) setAadharError('');
+          }}
           keyboardType="numeric"
           maxLength={12}
         />
-        <TouchableOpacity
-          style={styles.addPhoto}
-          onPress={() => pickImageFromGallery(setAadharPhoto)}
-        >
-          <Text style={styles.addPhotoText}>Add Aadhar Photo</Text>
-          <Ionicons name="attach" size={16} color="#666" />
-        </TouchableOpacity>
-        {aadharPhoto && <Image source={{ uri: aadharPhoto }} style={styles.preview} />}
+        {aadharError ? <Text style={styles.errorText}>{aadharError}</Text> : null}
 
+        {aadhaarVerified ? (
+          <Text style={styles.verifiedText}>✅ Aadhaar Verified</Text>
+        ) : (
+          <TouchableOpacity style={styles.verifyButton} onPress={verifyaadharnumber} disabled={aadhaarLoading}>
+            {aadhaarLoading ? (
+              <ActivityIndicator color="#fff" />
+            ) : (
+              <>
+                <Ionicons name="checkmark-circle" size={18} color="#fff" />
+                <Text style={styles.verifyButtonText}>Verify Aadhaar</Text>
+              </>
+            )}
+          </TouchableOpacity>
+        )}
+
+        {/* License Input */}
         <TextInput
-          style={styles.input}
+          style={[styles.input, licenseError ? styles.errorInput : null]}
           placeholder="Driver's License Number"
           value={driversLicenseNumber}
-          onChangeText={setDriversLicenseNumber}
+          onChangeText={(text) => {
+            setDriversLicenseNumber(text);
+            if (text.trim()) setLicenseError('');
+          }}
           maxLength={16}
         />
-        <TouchableOpacity
-          style={styles.addPhoto}
-          onPress={() => pickImageFromGallery(setLicensePhoto)}
-        >
-          <Text style={styles.addPhotoText}>Add License Photo</Text>
-          <Ionicons name="attach" size={16} color="#666" />
-        </TouchableOpacity>
-        {licensePhoto && <Image source={{ uri: licensePhoto }} style={styles.preview} />}
+        {licenseError ? <Text style={styles.errorText}>{licenseError}</Text> : null}
 
-        <TouchableOpacity style={styles.takeImageButton} onPress={takeLivePhoto}>
-          <Text style={styles.takeImageButtonText}>Take Live Photo</Text>
-        </TouchableOpacity>
-        {livePhoto && <Image source={{ uri: livePhoto }} style={styles.preview} />}
+        {licenseVerified ? (
+          <Text style={styles.verifiedText}>✅ License Verified</Text>
+        ) : (
+          <TouchableOpacity style={styles.verifyButton} onPress={verifydriverslicensenumber} disabled={licenseLoading}>
+            {licenseLoading ? (
+              <ActivityIndicator color="#fff" />
+            ) : (
+              <>
+                <Ionicons name="checkmark-circle" size={18} color="#fff" />
+                <Text style={styles.verifyButtonText}>Verify License</Text>
+              </>
+            )}
+          </TouchableOpacity>
+        )}
       </View>
 
+      {/* Bottom Update */}
       <View style={styles.bottomButton}>
         <TouchableOpacity
           style={[styles.updateButton, isUploading && { opacity: 0.6 }]}
@@ -367,42 +225,43 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     padding: 16,
-    backgroundColor: '#fff',
     borderBottomWidth: 1,
     borderBottomColor: '#eee',
   },
-  headerText: { color: '#006400', fontSize: 16, fontWeight: '600', marginLeft: 10 },
+  headerText: { color: '#006400', fontSize: 18, fontWeight: '600', marginLeft: 10 },
+
   form: { padding: 20 },
+
   input: {
     borderWidth: 2,
     borderColor: '#006400',
     borderRadius: 8,
     padding: 10,
-    marginBottom: 10,
+    marginBottom: 6,
     fontSize: 16,
   },
-  addPhoto: {
+  errorInput: { borderColor: 'red' },
+  errorText: { color: 'red', marginBottom: 10, fontSize: 13 },
+
+  verifyButton: {
     flexDirection: 'row',
-    justifyContent: 'flex-end',
     alignItems: 'center',
-    marginBottom: 10,
-  },
-  addPhotoText: { color: '#666', marginRight: 5 },
-  preview: { width: 100, height: 100, marginVertical: 10, borderRadius: 8 },
-  takeImageButton: {
     backgroundColor: '#006400',
-    paddingVertical: 12,
+    paddingVertical: 10,
+    paddingHorizontal: 15,
     borderRadius: 8,
-    alignItems: 'center',
-    marginTop: 10,
-    borderTopWidth: 1,
-    borderTopColor: '#eee',
+    alignSelf: 'flex-end',
+    marginBottom: 20,
   },
-  takeImageButtonText: {
-    color: '#006400',
-    fontWeight: 'bold',
-    fontSize: 16,
+  verifyButtonText: { color: '#fff', fontWeight: '600', marginLeft: 6 },
+
+  verifiedText: {
+    color: 'green',
+    fontWeight: '700',
+    marginBottom: 20,
+    textAlign: 'right',
   },
+
   bottomButton: {
     padding: 20,
     borderTopWidth: 1,

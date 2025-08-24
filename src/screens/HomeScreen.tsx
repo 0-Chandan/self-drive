@@ -22,6 +22,8 @@ import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import type { RouteProp } from '@react-navigation/native';
 import { RootStackParamList } from '../navigation/navigation';
 import BenefitModal from '../components/BenefitModal';
+import { baseURL } from '../constant/Base_Url';
+import axios from 'axios';
 
 import { startBackgroundLocation,stopBackgroundLocation,getIsRunning,type Location } from '../backgroundlocation/BackgroundLocation';
 type TabParamList = {
@@ -39,6 +41,33 @@ type CustomCheckboxProps = {
   isChecked: boolean;
   onChange: (isChecked: boolean) => void;
 };
+type Cardata = {
+  id: number;
+  name: string;
+  number: string;
+  typeId: number;
+  fuel: string;
+  transmission: string;
+  ac: boolean;
+  seats: number;
+  available: boolean;
+  location: string | null;
+  latitude: number | null;
+  longitude: number | null;
+  features: string | null;
+  benefits: string | null;
+  cancellationPolicy: string;
+  pricePerKm: number;
+  pricePerDay: number;
+  driverCharge: number;
+  convenienceFee: number;
+  tripProtectionFee: number;
+  deposit: number | null;
+  images: { url: string; public_id: string };
+  url: string;
+  public_id: string;
+  rating?: number;
+}
 
 const CustomCheckbox = ({ label, isChecked, onChange }: CustomCheckboxProps) => {
     
@@ -69,6 +98,7 @@ const HomeScreen: React.FC = () => {
   const [isSelfDrive, setIsSelfDrive] = useState(false);
   const [modalVisible1, setModalVisible1] = useState(false);
   const[modalVisible2, setModalVisible2] = useState(false);
+  const[cardata , setCardata] = useState<Cardata[]>([]);
   
 
     const [running, setRunning] = useState(getIsRunning());
@@ -98,6 +128,7 @@ const HomeScreen: React.FC = () => {
   useEffect(() => {
   
     requestPermissions();
+      getcardata();
   //   setTimeout(() => {
   //     const startTracking = async () => {
   //   try {
@@ -143,6 +174,22 @@ const handleSelectDates = (startISO: string, endISO: string) => {
   setDatePickerVisible(false);
 };
 
+const getcardata = ()=>{
+  axios.get(`${baseURL}/vehicles?page=1&limit=4`,{
+    withCredentials: true,
+    headers: {
+      'Content-Type': 'application/json',
+      // Authorization: `Bearer ${token}`, // Uncomment if token is required
+    },
+  })
+  .then((response) => {
+    console.log("response data",response.data.data.cars);
+    setCardata(response.data.data.cars);
+  })
+  .catch((error) => {
+    console.log(error);
+  });
+}
 
   const formatDateTime = (date: Date | null) => {
     if (!date || !(date instanceof Date) || isNaN(date.getTime())) {
@@ -291,17 +338,14 @@ const handleSelectDates = (startISO: string, endISO: string) => {
       <View style={styles.sectionContainer}>
         <Text style={styles.sectionTitle}>BEST DEALS FOR YOU...</Text>
         <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.carList}>
-          {[
-            { id: 1, name: 'Kia Seltos', price: '₹400 / 10km', tags: 'Manual | Petrol | Seat: 6', image: require('../../assets/car1.png') },
-            { id: 2, name: 'Hyundai Creta', price: '₹450 / 10km', tags: 'Automatic | Diesel | Seat: 7', image: require('../../assets/car1.png') },
-            { id: 3, name: 'Hyundai Creta', price: '₹450 / 10km', tags: 'Automatic | Diesel | Seat: 7', image: require('../../assets/car1.png') },
-            { id: 4, name: 'Hyundai Creta', price: '₹450 / 10km', tags: 'Automatic | Diesel | Seat: 7', image: require('../../assets/car1.png') },
-          ].map((car) => (
+          {cardata?.map((car) => (
             <View key={car.id} style={styles.carCard}>
-              <Image source={car.image} style={styles.carImage} />
+              <Image source={{ uri: car.images.url}} style={styles.carImage} />
               <Text style={styles.carTitle}>{car.name}</Text>
-              <Text style={styles.carPrice}>{car.price}</Text>
-              <Text style={styles.carTags}>{car.tags}</Text>
+              <Text style={styles.carPrice}>{car.pricePerDay}/day</Text>
+              <Text style={styles.carTags}>{car.features}</Text>
+              {
+             car.available?
               <TouchableOpacity
                 style={styles.viewButton}
                 // remove comment  (chandan)
@@ -310,6 +354,16 @@ const handleSelectDates = (startISO: string, endISO: string) => {
               >
                 <Text style={styles.viewText}>VIEW</Text>
               </TouchableOpacity>
+              :
+              <TouchableOpacity
+                style={styles.notAvailableButton}
+                // remove comment  (chandan)
+               // onPress={() => Alert.alert('View Details', `Details for `)}
+              >
+                <Text style={styles.viewText}>Not Available</Text>
+              </TouchableOpacity>
+
+}
             </View>
           ))}
         </ScrollView>
@@ -531,6 +585,9 @@ const styles = StyleSheet.create({
   testimonialCard: { backgroundColor: '#fff', borderRadius: 8, padding: 12, marginRight: 10, width: 250 },
   testimonialImage: { width: 100, height: 80, borderRadius: 8 },
   testimonialText: { fontSize: 13, marginTop: 8 },
+  notAvailableButton :{
+    backgroundColor: '#640000ff', padding: 6, borderRadius: 6, marginTop: 8
+  }
 });
 
 export default HomeScreen;

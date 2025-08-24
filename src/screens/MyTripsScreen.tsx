@@ -23,6 +23,7 @@ type Trip = {
   status: string;
   images: { url: string };
   rating?: number;
+  available: boolean;
   reviews?: number;
   distance?: number;
   ac: boolean;
@@ -102,6 +103,7 @@ const MyTripsScreen: React.FC = () => {
         reviews: car.reviews || 3,
         distance: car.distance || 5.5,
         ac: car.ac || false,
+        available: car.available || false,
         //seats: car.seats || 5,
         number:car?.number,
         fuel: car.fuel || 'N/A',
@@ -260,7 +262,22 @@ const MyTripsScreen: React.FC = () => {
         
                 <View style={styles.priceContainer}>
                   <Text style={styles.price}>₹{trip.pricePerDay}/day</Text>
-                  <Text style={styles.totalPrice}> ₹{(trip.pricePerDay + trip.convenienceFee + trip.tripProtectionFee + trip.driverCharge).toFixed(2)} total</Text>
+                 {
+  trip.available ? (
+    <Text
+      style={styles.available}
+    >
+      ✅ Available
+    </Text>
+  ) : (
+    <Text
+      style={styles.notAvailable}
+    >
+      Not Available
+    </Text>
+  )
+};
+
                 </View>
               </View>
             </TouchableOpacity>
@@ -455,6 +472,28 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#006400',
   },
+  available:{
+backgroundColor: "#4CAF50", // Green
+        color: "#fff",
+        fontWeight:500,
+        fontSize:12,
+        paddingVertical: 2,
+        paddingHorizontal: 3,
+        borderRadius: 12,
+        textAlign: "center",
+        overflow: "hidden",
+  },
+  notAvailable:{
+     backgroundColor: "#F44336", // Red
+        color: "#fff",
+        fontWeight:500,
+        fontSize:12,
+        paddingVertical: 2,
+        paddingHorizontal: 3,
+        borderRadius: 12,
+        textAlign: "center",
+        overflow: "hidden",
+  }
 });
 
 export default MyTripsScreen;

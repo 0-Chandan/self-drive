@@ -14,7 +14,7 @@ import {
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import Geolocation from "@react-native-community/geolocation";
+import Geolocation from "@react-native-community/geolocation";       
 import { startBackgroundLocation, getIsRunning,type Location } from "../../backgroundlocation/BackgroundLocation";
 const Splash = () => {
   const navigation = useNavigation<NativeStackNavigationProp<any>>();
@@ -63,7 +63,7 @@ const Splash = () => {
       await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS);
     } catch {
       // no-op
-    }
+    } 
   };
 
   /** Foreground location request (FINE + COARSE) */
@@ -151,7 +151,7 @@ const Splash = () => {
 
       // Get a single location fix so you can reverse-geocode & show something useful
       Geolocation.getCurrentPosition(
-        (position) => {
+        async(position) => {
           console.log("getCurrentPosition==>>:", position);
           setLatitude(position.coords.latitude);
           setLongitude(position.coords.longitude);
@@ -288,7 +288,7 @@ const styles = StyleSheet.create({
   warningCircle: {
     width: 70,
     height: 70,
-    borderRadius: 35,
+    borderRadius: 35, 
     backgroundColor: "#90EE90",
     justifyContent: "center",
     alignItems: "center",

@@ -14,7 +14,7 @@ export const requestOtp = (mobile: string) => {
 export interface LoginResponse {
   token: string;
   user: { id: number; mobile: string; role: 'user' };
-  success: boolean;
+  success: boolean; 
 }
 
 export const verifyOtp = (mobile: string, otp: string) =>

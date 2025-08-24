@@ -10,22 +10,25 @@ import type { RouteProp } from '@react-navigation/native';
 import { Picker } from '@react-native-picker/picker';
 import { Calendar } from 'react-native-calendars';
 import axios from 'axios';
-import { baseURL } from '../constant/Base_Url';
+import { baseURL } from '../../constant/Base_Url';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import RazorpayCheckout from 'react-native-razorpay';
 
+
 type RootStackParamList = {
-  Payment: { carId: number; carName: string; price: string; startDate: string; endDate: string; carImage?: string };
+  Payment: { driverId: number, name: string,price:number };
   Main: { screen: string };
 };
 
 type PaymentNavigationProp = NativeStackNavigationProp<RootStackParamList, 'Payment'>;
 type PaymentRouteProp = RouteProp<RootStackParamList, 'Payment'>;
 
-const PaymentScreen: React.FC = () => {
+const BookedDriver: React.FC = () => {
   const navigation = useNavigation<PaymentNavigationProp>();
   const route = useRoute<PaymentRouteProp>();
-  const { carName, price, startDate, endDate, carId, carImage } = route.params;
+  const {driverId, name, price} = route.params;
+
+
   const [paymentMethod, setPaymentMethod] = useState('Cash');
   const [pickupDate, setPickupDate] = useState<string>('');
   const [returnDate, setReturnDate] = useState<string>('');
@@ -34,14 +37,15 @@ const PaymentScreen: React.FC = () => {
   const [customerId, setCustomerId] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(false);
   const[address, setAddress] = useState<string>('');
-  const[paymentid,setPaymentid] = useState<String>('');
-  console.log('paymentid',paymentid);
+    const[paymentid,setPaymentid] = useState<String>('');
   const [cardDetails, setCardDetails] = useState({
     cardNumber: '',
     expiry: '',
     cvv: '',
     cardName: ''
   });
+  const[hour, setHour] = useState<number>(1);
+
 
   const fetchCustomerId = async () => {
     try {
@@ -58,21 +62,56 @@ const PaymentScreen: React.FC = () => {
   useEffect(() => {
     fetchCustomerId();
   }, []);
+    const handlerazorpay = () =>{
 
-  const postdata = () => {
+    var options = {
+    description: 'Credits towards consultation',
+    image: 'https://i.imgur.com/3g7nmJC.jpg',
+    currency: 'INR',
+    key: 'rzp_test_Wj7tv57Xhk19Qj',
+    amount: price*100,
+    name: 'Acme Corp',
+    order_id: '',//Replace this with an order_id created using Orders API.
+    prefill: {
+      email: 'gaurav.kumar@example.com',
+      contact: '+919876543210',
+      name: 'Gaurav Kumar'
+    },
+    theme: {color: '#53a20e'}
+  }
+  RazorpayCheckout.open(options).then((data) => {
+    // handle success
+   
+    console.log("data",data)
+    setPaymentid(data?.razorpay_payment_id)
+    Alert.alert(`Success: ${data.razorpay_payment_id}`);
+   
+      postthrazorpay(data.razorpay_payment_id);
+    
+  }).catch((error) => {
+    // handle failure
+    postthrazorpay();
+    Alert.alert(`Error: ${error.code} | ${error.description}`);
+  });
+  }
+
+
+   const postthrazorpay=(paymentId?:string) =>{
     setLoading(true);
     const payload = {
       customerId,
-      vehicleId: carId,
+      driverId,
       pickupDate: pickupDate.toString(),
       returnDate: returnDate.toString(),
-      amount: parseFloat(price),
+      amount: price*hour,
       driver,
       paymentMethod,
       address,
+      razarPayId:paymentId||"",
+    PaymentStatus:paymentid?"Paid":"Failed"
       
     }
-    axios.post(`${baseURL}/order/create`, payload, {
+    axios.post(`${baseURL}/driver-booking/create`, payload, {
       withCredentials: true,
       headers: {
         'Content-Type': 'application/json',
@@ -80,46 +119,39 @@ const PaymentScreen: React.FC = () => {
     }).then((res) => {
       setLoading(false);
       Alert.alert('Success', 'Booking successful!');
-      navigation.navigate('Main', { screen: 'My Trips' });
+      navigation.navigate('Main', { screen: ' DriverDetails' });
     }).catch((err) => {
       setLoading(false);
       Alert.alert('Error', err.response?.data.message || 'Booking failed!');
     });
   }
 
-const postthrazorpay = (paymentId?: string) => {
-  setLoading(true);
-  const payload = {
-    customerId,
-    vehicleId: carId,
-    pickupDate: pickupDate.toString(),
-    returnDate: returnDate.toString(),
-    amount: parseFloat(price),
-    driver,
-    paymentMethod,
-    address,
-    razarPayId: paymentId || "", // use param if available
-    PaymentStatus: paymentId ? "Paid" : "Failed",
-  };
-  console.log("payload", payload);
-
-  axios.post(`${baseURL}/order/create`, payload, {
-    withCredentials: true,
-    headers: {
-      "Content-Type": "application/json",
-    },
-  })
-  .then((res) => {
-    setLoading(false);
-    Alert.alert("Success", "Booking successful!");
-    navigation.navigate("Main", { screen: "My Trips" });
-  })
-  .catch((err) => {
-    setLoading(false);
-    Alert.alert("Error", err.response?.data.message || "Booking failed!");
-  });
-};
-
+  const postdata = () => {
+    setLoading(true);
+    const payload = {
+      customerId,
+      driverId: driverId,
+      pickupDate: pickupDate.toString(),
+      returnDate: returnDate.toString(),
+      amount: price*hour,
+      paymentMethod,
+      address
+    }
+    console.log("payload",payload);
+    axios.post(`${baseURL}/driver-booking/create`, payload, {
+      withCredentials: true,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    }).then((res) => {
+      setLoading(false);
+      Alert.alert('Success', 'Booking successful!');
+      navigation.navigate('Main', { screen: 'Home' });
+    }).catch((err) => {
+      setLoading(false);
+      Alert.alert('Error', err.response?.data.message || 'Booking failed!');
+    });
+  }
 
   const formatDate = (dateStr: string) => {
     if (!dateStr || isNaN(new Date(dateStr).getTime())) {
@@ -130,8 +162,8 @@ const postthrazorpay = (paymentId?: string) => {
   };
 
   const handlePayment = () => {
-    if (!pickupDate || !returnDate || !paymentMethod) {
-      Alert.alert('⚠️ Please select pickup, return date and payment method');
+    if (!pickupDate || !returnDate || !paymentMethod || !hour) {
+      Alert.alert('⚠️ Please select pickup, return date , payment method and hour');
       return;
     }
 
@@ -156,39 +188,6 @@ if(paymentMethod==='Razapay')
 }
     postdata();
   };
-
-  const handlerazorpay = () =>{
-
-var options = {
-  key: "rzp_test_Wj7tv57Xhk19Qj", // <-- REQUIRED (replace with your Razorpay Key ID)
-  description: "CabCar",
-  image: "https://i.imgur.com/3g7nmJC.jpg",
-  currency: "INR",
-  amount: Math.round(Number(price) * 100), // amount in paise (so 50000 = ₹500)
-  name: "Acme Corp",
-  order_id: "", // Replace with actual order_id created via Orders API
-  prefill: {
-    email: "gaurav.kumar@example.com",
-    contact: "+919876543210",
-    name: "Gaurav Kumar",
-  },
-  theme: { color: "#53a20e" },
-};
-
-RazorpayCheckout.open(options)
-  .then((data) => {
-    console.log("data", data);
-    setPaymentid(data.razorpay_payment_id); // still update state for logs/UI
-    postthrazorpay(data.razorpay_payment_id); // pass it directly
-    Alert.alert(`Success: ${data.razorpay_payment_id}`);
-  })
-  .catch((error) => {
-    postthrazorpay(); // no paymentId → "Failed"
-    Alert.alert(`Error: ${error.code} | ${error.description}`);
-  });
-
-
-  }
 
   const formatCardNumber = (text: string) => {
     const cleaned = text.replace(/\D/g, '').substring(0, 16);
@@ -217,11 +216,10 @@ RazorpayCheckout.open(options)
     <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
       {/* Car Info Card */}
       <View style={styles.carCard}>
-        {carImage && <Image source={{ uri: carImage }} style={styles.carImage} />}
         <View style={styles.carInfo}>
-          <Text style={styles.carName}>{carName}</Text>
+          <Text style={styles.carName}>{name}</Text>
           <View style={styles.priceRow}>
-            <Text style={styles.tripPrice}>RS.{price}/day</Text>
+            <Text >Rs.{price}/hour</Text>
             {/* <Text style={styles.tripDate}>
               {`${formatDate(startDate)} - ${formatDate(endDate)}`}
             </Text> */}
@@ -291,19 +289,6 @@ RazorpayCheckout.open(options)
         </View>
       )}
 
-      {/* Driver Option */}
-      <View style={styles.section}>
-        <TouchableOpacity 
-          style={styles.driverToggle} 
-          onPress={() => setDriver(!driver)}
-        >
-          <View style={styles.checkbox}>
-            {driver && <Ionicons name="checkmark" size={18} color="#fff" />}
-          </View>
-          <Text style={styles.driverText}>I need a driver (+RS.20/day)</Text>
-        </TouchableOpacity>
-      </View>
-
       {/* Payment Method */}
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Payment Method</Text>
@@ -327,31 +312,30 @@ RazorpayCheckout.open(options)
       </View>
 
        <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Address</Text>
+        <Text style={styles.sectionTitle}>Basic Info</Text>
         <View style={styles.paymentMethodContainer}>
-       <TextInput
+       <TextInput                      
         style={styles.input}
         placeholder="Address"
         value={address}
         onChangeText={setAddress}
       />
         </View>
+        <Text>Time in Hours</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Enter time in hours"
+          value={hour.toString()}
+          onChangeText={text => setHour(Number(text))}
+          keyboardType='numeric'
+        />
       </View>
 
+      {/* Card Details (only shown when Razapay is selected) */}
+     
 
       {/* Summary */}
       <View style={styles.summarySection}>
-        <Text style={styles.summaryTitle}>Booking Summary</Text>
-        <View style={styles.summaryRow}>
-          <Text style={styles.summaryLabel}>Base Price</Text>
-          <Text style={styles.summaryValue}>Rs.{price}</Text>
-        </View>
-        {driver && (
-          <View style={styles.summaryRow}>
-            <Text style={styles.summaryLabel}>Driver Fee</Text>
-            <Text style={styles.summaryValue}>Rs.20</Text>
-          </View>
-        )}
         <View style={styles.summaryRow}>
           <Text style={styles.summaryLabel}>Taxes & Fees</Text>
           <Text style={styles.summaryValue}>Rs.15</Text>
@@ -359,7 +343,7 @@ RazorpayCheckout.open(options)
         <View style={styles.divider} />
         <View style={[styles.summaryRow, styles.totalRow]}>
           <Text style={styles.totalLabel}>Total</Text>
-          <Text style={styles.totalValue}>Rs.{driver ? parseFloat(price) + 35 : parseFloat(price) + 15}</Text>
+          <Text style={styles.totalValue}>Rs.{price*hour}</Text>
         </View>
       </View>
 
@@ -648,4 +632,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default PaymentScreen;
+export default BookedDriver;

@@ -73,7 +73,7 @@ export type RootStackParamList = {
   Payment: {
     carId: number;
     carName: string;
-    price: string;
+    price: number;
     startDate: string;
     endDate: string;
     isWithDriver?: boolean;
@@ -93,6 +93,9 @@ export type RootStackParamList = {
   splash: undefined;
   ExperienceDriver: undefined;
   BottomTabNavigator: undefined;
+  DriverDetails: undefined;
+  BookedCar: undefined;
+  BookedDriver: { driverId: number,name: string,price?: number };
 };
 
 export type BottomTabParamList = NavigatorScreenParams<TabParamList>;

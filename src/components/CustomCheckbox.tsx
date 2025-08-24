@@ -17,7 +17,7 @@ const CustomCheckbox: React.FC<CustomCheckboxProps> = ({ label, initialChecked =
       <Ionicons
         name={isChecked ? 'checkbox-outline' : 'square-outline'}
         size={24}
-        color="#900"
+        color="rgba(0, 153, 8, 1)"
       />
       <Text style={styles.checkboxLabel}>{label}</Text>
     </TouchableOpacity>

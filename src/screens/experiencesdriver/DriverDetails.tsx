@@ -18,6 +18,7 @@ import axios from "axios";
 import { baseURL } from "../../constant/Base_Url";
 import Icon from 'react-native-vector-icons/Ionicons';
 import LinearGradient from 'react-native-linear-gradient';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const { width } = Dimensions.get('window');
 
@@ -25,7 +26,26 @@ const DriverDetails: React.FC = () => {
   const [driverDetails, setDriverDetails] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
   const { driverId } = useRoute().params as { driverId: number };
+  const[userid,setUserId]= useState<number>(0);
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+
+  const fetchCustomerId = async () => {
+    try {
+      const value = await AsyncStorage.getItem('user');
+      const user = value ? JSON.parse(value) : null;
+      if (value !== null) {
+        setUserId(parseInt(user.id));
+      }
+    } catch (error) {
+      console.error('Error fetching customer ID:', error);
+    }
+  }
+
+  useEffect(() => {
+    fetchCustomerId();
+  }, []);
+
+
 
   const getDriverDetails = async () => {
     try {
@@ -36,7 +56,7 @@ const DriverDetails: React.FC = () => {
           "Content-Type": "application/json",
         },
       });
-      setDriverDetails(response.data.data);
+      setDriverDetails(response.data.data); 
     } catch (error) {
       console.error("Error fetching driver details:", error);
       Alert.alert("Error", "Failed to load driver details. Please try again.");
@@ -52,27 +72,31 @@ const DriverDetails: React.FC = () => {
   }, [driverId]);
 
   const handleBookDriver = () => {
+    if(!driverDetails.available){
+      Alert.alert('Not Available', 'This driver is not available for booking.');
+      return;
+    }
+  if(!userid){
     Alert.alert(
-      "Book Driver",
-      `Are you sure you want to book ${driverDetails?.name}?`,
+      'Login Required',
+      'You need to log in to book a driver.',
       [
         {
-          text: "Cancel",
-          style: "cancel"
+          text: 'Cancel',
+          style: 'cancel',
         },
-        { 
-          text: "Confirm", 
-          onPress: () => {
-            // Uncomment when booking functionality is implemented
-            // navigation.navigate("Booking", { 
-            //   driverId: driverDetails.id, 
-            //   driverName: driverDetails.name 
-            // });
-            Alert.alert("Success", "Driver booked successfully!");
-          }
-        }
-      ]
+        {
+          text: 'Log In',
+          onPress: () => navigation.navigate('Login', { redirectTo: { screen: 'DriverDetails', params: { driverId } } }),
+        },
+      ],
+      { cancelable: false }
     );
+    return;
+  }
+    navigation.navigate('BookedDriver',{driverId,name:driverDetails?.name,price:50});
+    
+    
   };
 
   if (isLoading) {
@@ -214,7 +238,7 @@ const DriverDetails: React.FC = () => {
             {driverDetails.available ? "BOOK NOW" : "NOT AVAILABLE"}
           </Text>
           <Text style={styles.bookButtonSubtext}>
-            {driverDetails.available ? "₹500/hour (minimum 2 hours)" : "Check back later"}
+            {driverDetails.available ? "₹50/hour (minimum 2 hours)" : "Check back later"}
           </Text>
         </TouchableOpacity>
       </View>
